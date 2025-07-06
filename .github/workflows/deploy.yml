@@ -43,7 +43,7 @@ jobs:
         run: npm run build
         env:
           VITE_SPOTIFY_CLIENT_ID: 0981792b5bc94457a102687309d0beb6
-          VITE_REDIRECT_TARGET: https://jbukuts.github.io/wav-parse
+          VITE_REDIRECT_TARGET: https://jbukuts.github.io/ipodify
 
       - name: nojekyll
         run: touch ./dist/.nojekyll
