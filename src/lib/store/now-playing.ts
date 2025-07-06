@@ -34,17 +34,28 @@ const usePlaybackState = create<NowPlayingStore>((set) => {
     //   staleTime: 0
     // });
 
-    sdk.player.getPlaybackState().then((state) => {
-      if (state === null)
-        return set({
+    sdk.player
+      .getPlaybackState()
+      .then((state) => {
+        if (state === null)
+          return set({
+            isPlaying: false,
+            device: null,
+            item: null,
+            context: null
+          });
+
+        queryClient.setQueryData(['now_playing_global'], () => state);
+      })
+      .catch(() => {
+        console.log('error gettings playback state');
+        set({
           isPlaying: false,
           device: null,
           item: null,
           context: null
         });
-
-      queryClient.setQueryData(['now_playing_global'], () => state);
-    });
+      });
   };
 
   observer.subscribe((result) => {

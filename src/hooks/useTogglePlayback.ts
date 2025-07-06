@@ -43,5 +43,5 @@ export function useTogglePlayback() {
     }
   });
 
-  return mutate;
+  return { toggle: mutate, isPlaying };
 }

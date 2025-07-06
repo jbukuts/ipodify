@@ -13,6 +13,7 @@ import Blobs from './blobs';
 import SCREEN_MAP from './windows';
 import useAddWindow from '#/hooks/useAddWindow';
 import usePlaybackState from '#/lib/store/now-playing';
+import { PlaybackSDKProvider } from '#/lib/playback-sdk-context';
 
 function calcOverlayColor(color: [number, number, number]) {
   const [r, g, b] = color;
@@ -64,7 +65,7 @@ function Head() {
     }))
   );
 
-  const { isPlaying, startPolling, stopPolling, device } = useNowPlaying(
+  const { startPolling, stopPolling, device } = useNowPlaying(
     useShallow(({ isPlaying, startPolling, stopPolling, device }) => ({
       isPlaying,
       startPolling,
@@ -72,10 +73,8 @@ function Head() {
       device
     }))
   );
-
   const title = useWindowTitle();
-
-  const togglePlayback = useTogglePlayback();
+  const { toggle, isPlaying } = useTogglePlayback();
 
   useEffect(() => {
     startPolling();
@@ -83,14 +82,13 @@ function Head() {
   }, [startPolling, stopPolling]);
 
   const goBack = () => removeWindow();
-  const toggle = () => togglePlayback();
 
   return (
     <div className='flex w-full justify-between gap-1 border-b-[0.125rem] border-fg pb-1'>
       <IconButton
         disabled={device === null}
         icon={!isPlaying ? Play : Pause}
-        onClick={toggle}></IconButton>
+        onClick={() => toggle()}></IconButton>
       <MenuItem
         onClick={goBack}
         className={cn(
@@ -116,7 +114,7 @@ export default function Main() {
   );
 
   return (
-    <>
+    <PlaybackSDKProvider>
       <Blobs />
       <AlbumArt />
       {device === null && windows[windows.length - 1][0] !== 'Devices' && (
@@ -161,6 +159,6 @@ export default function Main() {
           </div>
         </div>
       </main>
-    </>
+    </PlaybackSDKProvider>
   );
 }

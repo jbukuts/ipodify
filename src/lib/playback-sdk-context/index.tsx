@@ -1,0 +1,116 @@
+import { useEffect, useState, type ReactNode } from 'react';
+import { sdk } from '../sdk';
+import usePlaybackState from '../store/now-playing';
+import { useShallow } from 'zustand/react/shallow';
+import { toast } from 'sonner';
+import { PlaybackContext, type PlaybackSDKContext } from './context';
+
+function useSDKReady() {
+  const [script, setScript] = useState(false);
+
+  useEffect(() => {
+    if (script) return;
+    if (
+      !window.Spotify &&
+      document.getElementById('playback-sdk-script') === null
+    ) {
+      const scriptTag = document.createElement('script');
+      scriptTag.id = 'playback-sdk-script';
+      scriptTag.src = 'https://sdk.scdn.co/spotify-player.js';
+      document.head.appendChild(scriptTag);
+    }
+
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      setScript(true);
+    };
+  }, []);
+
+  return script;
+}
+
+export function PlaybackSDKProvider(props: { children: ReactNode }) {
+  const { children } = props;
+
+  const script = useSDKReady();
+  const [player, setPlayer] = useState<Spotify.Player>();
+  const [current, setCurrent] = useState<PlaybackSDKContext['current']>();
+  const [ready, setReady] = useState(false);
+  const { device, refetch } = usePlaybackState(
+    useShallow(({ device, refetch }) => ({ device, refetch }))
+  );
+
+  useEffect(() => {
+    if (!script) return;
+    console.log('create player!');
+
+    const p = new Spotify.Player({
+      name: 'ipodify',
+      getOAuthToken: async (cb) => {
+        const token = await sdk.getAccessToken();
+        if (!token) throw new Error('No token. Cannot auth playback SDK');
+        cb(token.access_token);
+      },
+      volume: 0.15
+    });
+
+    setPlayer(player);
+
+    const handleReady: Spotify.PlaybackInstanceListener = ({ device_id }) => {
+      console.log('Ready with Device ID', device_id);
+      setReady(true);
+
+      if (!device)
+        sdk.player
+          .transferPlayback([device_id], false)
+          .then(() => {
+            toast.success('Device connected');
+          })
+          .finally(() => {
+            setTimeout(refetch, 250);
+          });
+    };
+
+    const handleOffline: Spotify.PlaybackInstanceListener = ({ device_id }) => {
+      console.log('Device ID has gone offline', device_id);
+      setReady(false);
+    };
+
+    const handleError: Spotify.ErrorListener = ({ message }) => {
+      console.error(message);
+      toast.error(message);
+      setReady(false);
+    };
+
+    p.addListener('player_state_changed', (state) => {
+      const {
+        track_window: { current_track }
+      } = state;
+      setCurrent({
+        id: current_track.id,
+        uri: current_track.uri,
+        name: current_track.name
+      });
+    });
+    p.addListener('ready', handleReady);
+    p.addListener('not_ready', handleOffline);
+    p.addListener('initialization_error', handleError);
+    p.addListener('authentication_error', handleError);
+    p.addListener('account_error', handleError);
+    p.activateElement();
+    p.connect();
+
+    return () => {
+      p.removeListener('ready', handleReady);
+      p.removeListener('not_ready', handleOffline);
+      p.removeListener('initialization_error', handleError);
+      p.removeListener('authentication_error', handleError);
+      p.removeListener('account_error', handleError);
+    };
+  }, [script]);
+
+  return (
+    <PlaybackContext.Provider value={{ player, ready, current }}>
+      {children}
+    </PlaybackContext.Provider>
+  );
+}
