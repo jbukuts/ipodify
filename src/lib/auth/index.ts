@@ -6,47 +6,8 @@ import {
   type IResponseDeserializer
 } from '@spotify/web-api-ts-sdk';
 
-const CLIENT_ID = '0981792b5bc94457a102687309d0beb6';
-const REDIRECT_URI = 'http://localhost:5173';
-
-export interface AuthRes {
-  access_token: string;
-  token_type: string;
-  scope: string;
-  expires_in: number;
-  refresh_token: string;
-}
-
-interface ErrorAuthRes {
-  error: string;
-  error_description: string;
-}
-
-export const getToken = async (
-  code: string
-): Promise<AuthRes | ErrorAuthRes> => {
-  // stored in the previous step
-  const codeVerifier = localStorage.getItem('code_verifier');
-  if (!codeVerifier) throw new Error('No code verifier');
-
-  const url = 'https://accounts.spotify.com/api/token';
-  const payload = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: new URLSearchParams({
-      client_id: CLIENT_ID,
-      grant_type: 'authorization_code',
-      code,
-      redirect_uri: REDIRECT_URI,
-      code_verifier: codeVerifier
-    })
-  };
-
-  return fetch(url, payload).then((b) => b.json());
-};
-
+const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID as string;
+const REDIRECT_URI = import.meta.env.VITE_REDIRECT_TARGET as string;
 export const STORAGE_EVENT_KEY = 'custom-storage-event';
 
 export class ExtendedCacheStrategy extends GenericCache {
