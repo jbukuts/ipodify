@@ -1,54 +1,36 @@
-# React + TypeScript + Vite
+# ipodify
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Custom Spotify web client designed to look like an old iPod.
 
-Currently, two official plugins are available:
+Built using:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [React](https://react.dev/)
+- [TailwindCSS v4](https://tailwindcss.com/docs/installation/using-vite)
+- [@spotify/web-api-ts-sdk](https://www.npmjs.com/package/@spotify/web-api-ts-sdk)
+- [tanstack/react-query](https://tanstack.com/query/latest/docs/framework/react/overview)
+- [Radix UI](https://www.radix-ui.com/themes/docs/overview/getting-started)
 
-## Expanding the ESLint configuration
+## Running locally
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+First, create an `.env` file containing:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- `VITE_SPOTIFY_CLIENT_ID`: Spotify Developer application client ID
+- `VITE_REDIRECT_TARGET`: Where to redirect after login (should be site root)
+
+Install dependencies via:
+
+```bash
+npm ci
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Then run the app locally via:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm run dev
 ```
+
+The site will be served locally at http://localhost:5173
+ 
+## Further documentation:
+
+- [Spotify Web API](https://developer.spotify.com/documentation/web-api)
