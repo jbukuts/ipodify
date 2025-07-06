@@ -1,0 +1,55 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
+import Screen from '../shared/screen';
+import { sdk } from '#/lib/auth';
+import MenuItem from '../shared/menu-item';
+import usePlaybackState from '#/lib/store/now-playing';
+import { Check } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
+
+export default function Devices() {
+  const { activeDevice, refetch } = usePlaybackState(
+    useShallow((s) => ({ activeDevice: s.device, refetch: s.refetch }))
+  );
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['devices'],
+    queryFn: () => sdk.player.getAvailableDevices()
+  });
+
+  const { mutate } = useMutation({
+    mutationKey: ['set-devices'],
+    mutationFn: (id: string) => {
+      if (activeDevice?.id === id) return Promise.resolve();
+      return sdk.player.transferPlayback([id], false);
+    },
+    onSettled: refetch
+  });
+
+  return (
+    <Screen loading={isLoading}>
+      {data && data.devices.length === 0 && (
+        <div className='flex size-full flex-col items-center justify-center gap-4'>
+          <p className='text-fg'>No active devices found</p>
+          <button className='rounded-md border-[0.125rem] border-fg p-1.5 text-sm text-fg transition-colors hover:cursor-pointer hover:bg-fg hover:text-bg'>
+            Create new device
+          </button>
+        </div>
+      )}
+      {data &&
+        data.devices.length > 0 &&
+        data.devices.map((device) => {
+          const { id, name } = device;
+          if (!id) return;
+
+          return (
+            <MenuItem
+              key={id}
+              icon={activeDevice?.id === id ? Check : false}
+              onClick={() => mutate(id)}>
+              {name}
+            </MenuItem>
+          );
+        })}
+    </Screen>
+  );
+}

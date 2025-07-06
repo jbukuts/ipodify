@@ -1,0 +1,45 @@
+import { sdk } from '#/lib/auth';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
+
+interface UsePlaylistsOpts {
+  enabled?: boolean;
+  ownerOnly?: boolean;
+}
+
+export default function useSavedPlaylists(opts: UsePlaylistsOpts) {
+  const { enabled = false, ownerOnly = false } = opts;
+
+  const { data: profile } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => sdk.currentUser.profile(),
+    staleTime: Infinity,
+    enabled: ownerOnly
+  });
+
+  const { data: playlists, ...rest } = useInfiniteQuery({
+    queryKey: ['saved_playlists'],
+    queryFn: async ({ pageParam }) => {
+      return sdk.currentUser.playlists.playlists(50, pageParam);
+    },
+    getNextPageParam: (lastPage) =>
+      lastPage.next ? lastPage.offset + 50 : undefined,
+    initialPageParam: 0,
+    enabled: enabled && (!ownerOnly || profile !== undefined)
+  });
+
+  const flatPlaylists = useMemo(
+    () =>
+      !ownerOnly
+        ? (playlists?.pages.flatMap((p) => p.items) ?? [])
+        : (playlists?.pages.flatMap((p) => p.items) ?? []).filter(
+            (p) => p.owner.id === profile?.id || p.collaborative
+          ),
+    [playlists, profile, ownerOnly]
+  );
+
+  return {
+    playlists: flatPlaylists,
+    ...rest
+  };
+}

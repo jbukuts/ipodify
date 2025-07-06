@@ -1,0 +1,47 @@
+import type { TrackItemProps } from '#/components/shared/track-item';
+import { sdk } from '#/lib/auth';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+
+type T = TrackItemProps['track'];
+
+export default function useTrackSavedState(opts: {
+  track: T;
+  enabled?: boolean;
+  initial?: boolean;
+}) {
+  const { track, enabled, initial = false } = opts;
+  const { id, name } = track;
+
+  const client = useQueryClient();
+  const { data: isSaved, refetch } = useQuery({
+    queryKey: ['is-liked', id],
+    initialData: [initial ?? true],
+    queryFn: () => sdk.currentUser.tracks.hasSavedTracks([id]),
+    select: (d) => d[0],
+    enabled: enabled && !initial
+  });
+
+  const { mutate: toggleLiked } = useMutation({
+    mutationFn: () => {
+      return sdk.makeRequest(isSaved ? 'DELETE' : 'PUT', 'me/tracks', {
+        ids: [track.id]
+      });
+    },
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ['liked_songs'] });
+      setTimeout(refetch, 500);
+      toast.success(
+        `${isSaved ? 'Removed' : 'Added'} ${name} ${isSaved ? 'from' : 'to'} Liked Songs`
+      );
+    },
+    onError: (e) => {
+      console.error(e);
+      toast.error(
+        `Failed to ${isSaved ? 'remove' : 'add'} ${name} ${isSaved ? 'from' : 'to'} Liked Songs`
+      );
+    }
+  });
+
+  return { isSaved, toggleLiked };
+}
