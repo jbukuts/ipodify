@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { STORAGE_EVENT_KEY } from '../lib/auth';
+import { STORAGE_EVENT_KEY } from '#/lib/sdk/constants';
 import { useLocalStorage } from '@uidotdev/usehooks';
 
 export default function useReadLocalStorage<T>(key: string) {
