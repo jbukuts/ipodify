@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import Screen from '../shared/screen';
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import MenuItem from '../shared/menu-item';
 import usePlaybackState from '#/lib/store/now-playing';
 import { Check } from 'lucide-react';

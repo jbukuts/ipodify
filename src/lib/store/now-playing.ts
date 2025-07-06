@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { sdk } from '../auth';
+import { sdk } from '../sdk';
 import type {
   Context,
   Device,

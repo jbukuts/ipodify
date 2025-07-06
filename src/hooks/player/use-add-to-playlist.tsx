@@ -1,4 +1,4 @@
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import type {
   Album,
   Episode,

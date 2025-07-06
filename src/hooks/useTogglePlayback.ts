@@ -1,4 +1,4 @@
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import usePlaybackState from '#/lib/store/now-playing';
 import { useMutation } from '@tanstack/react-query';
 import { useShallow } from 'zustand/react/shallow';

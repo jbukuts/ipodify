@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import { useEffect, useMemo, type ComponentProps } from 'react';
 import type { Artist, Page } from '@spotify/web-api-ts-sdk';
 import MenuItem from '../shared/menu-item';

@@ -1,4 +1,4 @@
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import usePlaybackState from '#/lib/store/now-playing';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';

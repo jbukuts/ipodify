@@ -1,4 +1,4 @@
-import { sdk } from '../lib/auth';
+import { sdk } from '../lib/sdk';
 
 export default function LoginView() {
   const handleLogin = () => {

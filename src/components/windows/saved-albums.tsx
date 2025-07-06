@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
 import AlbumItem from '../shared/album-item';
 

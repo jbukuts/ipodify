@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import TrackItem from '../shared/track-item';
 import usePlaySong from '#/hooks/usePlaySong';
 import type { Track } from '@spotify/web-api-ts-sdk';

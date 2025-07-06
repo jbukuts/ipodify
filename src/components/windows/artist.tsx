@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import Screen from '../shared/screen';
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import { memo, useState } from 'react';
 import TrackItem from '../shared/track-item';
 import usePlaySong from '#/hooks/usePlaySong';

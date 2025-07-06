@@ -1,4 +1,4 @@
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import type { Market, SimplifiedTrack } from '@spotify/web-api-ts-sdk';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { memo, useMemo } from 'react';

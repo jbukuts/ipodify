@@ -6,7 +6,7 @@ import { Slider } from '../shared/slider';
 import { useShallow } from 'zustand/react/shallow';
 import { useInterval } from 'usehooks-ts';
 import { useMutation } from '@tanstack/react-query';
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import { BetterSmartMarquee } from '../shared/smart-marquee';
 
 function formatTime(ms: number) {

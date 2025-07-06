@@ -1,4 +1,4 @@
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import Screen from '#/components/shared/screen';
 import MenuItem from '#/components/shared/menu-item';
 import { useQuery } from '@tanstack/react-query';

@@ -1,5 +1,5 @@
 import type { TrackItemProps } from '#/components/shared/track-item';
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 

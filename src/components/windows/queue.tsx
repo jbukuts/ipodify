@@ -1,4 +1,4 @@
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import { useQuery } from '@tanstack/react-query';
 import Screen from '../shared/screen';
 import TrackItem from '../shared/track-item';

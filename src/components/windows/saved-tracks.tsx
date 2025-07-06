@@ -1,4 +1,4 @@
-import { sdk } from '#/lib/auth';
+import { sdk } from '#/lib/sdk';
 import type { Track } from '@spotify/web-api-ts-sdk';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import BetterVirtualScreen from '../shared/better-virtual-screen';

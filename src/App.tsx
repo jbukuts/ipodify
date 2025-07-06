@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { sdk } from './lib/auth';
+import { sdk } from './lib/sdk';
 import Main from './components/main';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/query';
