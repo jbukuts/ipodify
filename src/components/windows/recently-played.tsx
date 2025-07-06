@@ -4,23 +4,48 @@ import { useQuery } from '@tanstack/react-query';
 import Screen from '../shared/screen';
 import TrackItem from '../shared/track-item';
 import usePlaySong from '#/hooks/usePlaySong';
+import { useMemo } from 'react';
 
-export default function RecentlyPlayed() {
-  const playSong = usePlaySong();
+interface UseRecentlyPlayedOpts {
+  timestamp?: number;
+  duplicates?: boolean;
+}
 
-  const { data, isLoading } = useQuery({
+function useRecentlyPlayed(opts?: UseRecentlyPlayedOpts) {
+  const { timestamp = Date.now(), duplicates = false } = opts ?? {};
+
+  const { data, ...rest } = useQuery({
     queryKey: ['recently_played'],
     queryFn: () =>
       sdk.player.getRecentlyPlayedTracks(50, {
         type: 'before',
-        timestamp: Date.now()
-      })
+        timestamp
+      }),
+    select: (d) => d.items
   });
-  const allRows = data ? data.items : [];
+
+  const tracks = useMemo(() => {
+    const tmp = data ? data : [];
+    if (duplicates || tmp.length === 0) return tmp;
+
+    const res = [tmp[0]];
+    for (let i = 1; i < tmp.length; i++) {
+      if (tmp[i].track.id !== tmp[i - 1].track.id) res.push(tmp[i]);
+    }
+
+    return res;
+  }, [data, duplicates]);
+
+  return { tracks, ...rest };
+}
+
+export default function RecentlyPlayed() {
+  const playSong = usePlaySong();
+  const { tracks, isLoading } = useRecentlyPlayed({ duplicates: false });
 
   const handlePlaySong = (track: Track, idx: number) => {
-    const range = allRows
-      .slice(Math.max(idx - 5, 0), idx + 5)
+    const range = tracks
+      .slice(Math.max(idx - 5, 0), Math.min(idx + 5, tracks.length - 1))
       .map((t) => t.track.uri);
     const offset = range.findIndex((s) => track.uri === s);
 
@@ -32,7 +57,7 @@ export default function RecentlyPlayed() {
 
   return (
     <Screen loading={isLoading}>
-      {allRows.map(({ track }, idx) => (
+      {tracks.map(({ track }, idx) => (
         <TrackItem
           trackNumber={idx + 1}
           track={track}
