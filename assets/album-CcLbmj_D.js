@@ -1,4 +1,4 @@
-import{c as d,r as g,j as m,M as y,s as k}from"./index-CC42YDAp.js";import{u as x}from"./useQuery-BOmUSlsH.js";import{u as h}from"./useInfiniteQuery-Cc7SxQQW.js";import{T as b}from"./track-item-CwQJ09AR.js";import{u as T}from"./usePlaySong-C_O1xhlO.js";import{B as P}from"./better-virtual-screen-BnzYC3-U.js";import"./useBaseQuery-CpfOvB-x.js";import"./context-menu-Dz9cmCnd.js";import"./smart-marquee-_rIHBaKJ.js";import"./screen--W04AKYv.js";import"./use-saved-playlists-D6uLeboa.js";/**
+import{c as d,r as g,j as m,M as y,s as k}from"./index-f1I_60Wl.js";import{u as x}from"./useQuery-CXSgYr8k.js";import{u as h}from"./useInfiniteQuery-DX5Z-ztU.js";import{T as b}from"./track-item-QKXQug1l.js";import{u as T}from"./usePlaySong-B-sj921G.js";import{B as P}from"./better-virtual-screen-DI4FFVVf.js";import"./useBaseQuery-C7iLOGfG.js";import"./context-menu-C3rLmken.js";import"./smart-marquee-CItSSMHC.js";import"./screen-BgKbOw0u.js";import"./use-saved-playlists-Dm7V3yRX.js";/**
  * @license lucide-react v0.515.0 - ISC
  *
  * This source code is licensed under the ISC license.
