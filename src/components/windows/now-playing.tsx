@@ -72,6 +72,13 @@ function InternalNowPlaying() {
     console.log('sdfsfsfsdf');
   }, [goTo]);
 
+  const searchLyrics = () => {
+    if (!item || !('artists' in item)) return;
+    window.open(
+      `https://www.google.com/search?q=${encodeURI(item.name + ' ' + item.artists[0].name + ' lyrics')}`
+    );
+  };
+
   if (item === null)
     return (
       <Screen className='flex flex-col items-center justify-center text-fg'>
@@ -86,15 +93,20 @@ function InternalNowPlaying() {
           wrapperClassName='w-full'
           className='text-center'
           autoPlay>
-          <span>{item.name}</span>
+          <span
+            className='hover:cursor-pointer hover:underline'
+            onClick={searchLyrics}>
+            {item.name}
+          </span>
         </BetterSmartMarquee>
         {'album' in item && (
           <BetterSmartMarquee
             autoPlay
             wrapperClassName='w-full'
-            className='text-center'
-            onClick={goTo(item.album.name, 'Album', { id: item.album.id })}>
-            <span className='hover:cursor-pointer hover:underline'>
+            className='text-center'>
+            <span
+              className='hover:cursor-pointer hover:underline'
+              onClick={goTo(item.album.name, 'Album', { id: item.album.id })}>
               {item.album.name}
             </span>
           </BetterSmartMarquee>
