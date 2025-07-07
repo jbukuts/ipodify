@@ -20,46 +20,29 @@ interface NowPlayingStore {
   stopPolling: () => void;
 }
 
+const PLAYBACK_QUERY_KEY = 'now_playing_global';
+
 const observer = new QueryObserver(queryClient, {
-  queryKey: ['now_playing_global']
+  queryKey: [PLAYBACK_QUERY_KEY]
 });
 
 const usePlaybackState = create<NowPlayingStore>((set) => {
   let intervalId: null | NodeJS.Timeout = null;
 
   const fetchData = async () => {
-    // await queryClient.prefetchQuery({
-    //   queryKey: ['now_playing_global'],
-    //   queryFn: () => sdk.player.getPlaybackState(),
-    //   staleTime: 0
-    // });
-
-    sdk.player
-      .getPlaybackState()
-      .then((state) => {
-        if (state === null)
-          return set({
-            isPlaying: false,
-            device: null,
-            item: null,
-            context: null
-          });
-
-        queryClient.setQueryData(['now_playing_global'], () => state);
-      })
-      .catch(() => {
-        console.log('error gettings playback state');
-        set({
-          isPlaying: false,
-          device: null,
-          item: null,
-          context: null
-        });
-      });
+    const d = await sdk.player.getPlaybackState().catch(() => undefined);
+    queryClient.setQueryData([PLAYBACK_QUERY_KEY], () => d);
   };
 
   observer.subscribe((result) => {
-    if (result.data === undefined) return;
+    if (result.data === undefined) {
+      return set({
+        isPlaying: false,
+        device: null,
+        item: null,
+        context: null
+      });
+    }
     const { item, is_playing, device, context, progress_ms } =
       result.data as PlaybackState;
 

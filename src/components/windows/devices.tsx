@@ -7,8 +7,8 @@ import { Check } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 
 export default function Devices() {
-  const { activeDevice, refetch } = usePlaybackState(
-    useShallow((s) => ({ activeDevice: s.device, refetch: s.refetch }))
+  const { activeDeviceId, refetch } = usePlaybackState(
+    useShallow((s) => ({ activeDeviceId: s.device?.id, refetch: s.refetch }))
   );
 
   const { data, isLoading } = useQuery({
@@ -19,7 +19,7 @@ export default function Devices() {
   const { mutate } = useMutation({
     mutationKey: ['set-devices'],
     mutationFn: (id: string) => {
-      if (activeDevice?.id === id) return Promise.resolve();
+      if (activeDeviceId === id) return Promise.resolve();
       return sdk.player.transferPlayback([id], false);
     },
     onSettled: refetch
@@ -44,7 +44,7 @@ export default function Devices() {
           return (
             <MenuItem
               key={id}
-              icon={activeDevice?.id === id ? Check : false}
+              icon={activeDeviceId === id ? Check : false}
               onClick={() => mutate(id)}>
               {name}
             </MenuItem>

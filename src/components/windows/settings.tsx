@@ -19,9 +19,15 @@ export default function Settings() {
     }));
   };
 
+  const goToSource = () => {
+    window.open(json.repository);
+  };
+
   return (
     <Screen>
-      <MenuItem text={json.version}>Version</MenuItem>
+      <MenuItem text={json.version} onClick={goToSource}>
+        Version
+      </MenuItem>
       <MenuItem text={clock ? 'true' : 'false'} onClick={toggleClock}>
         Show Clock
       </MenuItem>

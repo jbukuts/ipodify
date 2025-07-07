@@ -35,6 +35,8 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
   const [player, setPlayer] = useState<Spotify.Player>();
   const [current, setCurrent] = useState<PlaybackSDKContext['current']>();
   const [ready, setReady] = useState(false);
+  const [sdkPlayerId, setSDKPlayerID] = useState<string>();
+
   const { device, refetch } = usePlaybackState(
     useShallow(({ device, refetch }) => ({ device, refetch }))
   );
@@ -55,9 +57,11 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
 
     setPlayer(player);
 
-    const handleReady: Spotify.PlaybackInstanceListener = ({ device_id }) => {
+    const handleReady: Spotify.PlaybackInstanceListener = (inst) => {
+      const { device_id } = inst;
       console.log('Ready with Device ID', device_id);
       setReady(true);
+      setSDKPlayerID(device_id);
 
       if (!device)
         sdk.player
@@ -81,7 +85,7 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
       setReady(false);
     };
 
-    p.addListener('player_state_changed', (state) => {
+    const handleStateChange: Spotify.PlaybackStateListener = (state) => {
       const {
         track_window: { current_track }
       } = state;
@@ -90,7 +94,9 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
         uri: current_track.uri,
         name: current_track.name
       });
-    });
+    };
+
+    p.addListener('player_state_changed', handleStateChange);
     p.addListener('ready', handleReady);
     p.addListener('not_ready', handleOffline);
     p.addListener('initialization_error', handleError);
@@ -100,6 +106,7 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
     p.connect();
 
     return () => {
+      p.removeListener('player_state_changed', handleStateChange);
       p.removeListener('ready', handleReady);
       p.removeListener('not_ready', handleOffline);
       p.removeListener('initialization_error', handleError);
@@ -109,7 +116,7 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
   }, [script]);
 
   return (
-    <PlaybackContext.Provider value={{ player, ready, current }}>
+    <PlaybackContext.Provider value={{ player, ready, current, sdkPlayerId }}>
       {children}
     </PlaybackContext.Provider>
   );
