@@ -20,10 +20,10 @@ interface NowPlayingStore {
   stopPolling: () => void;
 }
 
-const PLAYBACK_QUERY_KEY = 'now_playing_global';
+export const PLAYBACK_STATE_QUERY_KEY = 'now_playing_global';
 
 const observer = new QueryObserver(queryClient, {
-  queryKey: [PLAYBACK_QUERY_KEY]
+  queryKey: [PLAYBACK_STATE_QUERY_KEY]
 });
 
 const usePlaybackState = create<NowPlayingStore>((set) => {
@@ -31,7 +31,7 @@ const usePlaybackState = create<NowPlayingStore>((set) => {
 
   const fetchData = async () => {
     const d = await sdk.player.getPlaybackState().catch(() => undefined);
-    queryClient.setQueryData([PLAYBACK_QUERY_KEY], () => d);
+    queryClient.setQueryData([PLAYBACK_STATE_QUERY_KEY], () => d);
   };
 
   observer.subscribe((result) => {

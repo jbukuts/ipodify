@@ -1,5 +1,7 @@
 import { sdk } from '#/lib/sdk';
-import usePlaybackState from '#/lib/store/now-playing';
+import usePlaybackState, {
+  PLAYBACK_STATE_QUERY_KEY
+} from '#/lib/store/now-playing';
 import { useMutation } from '@tanstack/react-query';
 import { useShallow } from 'zustand/react/shallow';
 import { queryClient } from '#/lib/query';
@@ -15,10 +17,10 @@ export function useTogglePlayback() {
 
   const { mutate } = useMutation({
     mutationFn: async () => {
-      const p = queryClient.getQueryData(['now_playing_global']);
+      const p = queryClient.getQueryData([PLAYBACK_STATE_QUERY_KEY]);
 
       queryClient.setQueryData(
-        ['now_playing_global'],
+        [PLAYBACK_STATE_QUERY_KEY],
         (old: PlaybackState) => ({
           ...old,
           is_playing: !isPlaying
@@ -33,7 +35,7 @@ export function useTogglePlayback() {
     onError: (err, _, context: PlaybackState | null | undefined) => {
       console.error(err);
       if (!context) return;
-      queryClient.setQueryData(['now_playing_global'], context);
+      queryClient.setQueryData([PLAYBACK_STATE_QUERY_KEY], context);
     },
     onSuccess: () => {
       console.log('playback toggle. need to refetch');
