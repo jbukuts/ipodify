@@ -36,9 +36,24 @@ function InternalNowPlaying() {
   const goTo = useAddWindow();
   const [val, setValue] = useState(progress);
 
-  useInterval(() => setValue((o) => o + 1000), isPlaying ? 1000 : null);
-  useEffect(() => setValue(progress), [progress]);
+  useInterval(
+    () => {
+      setValue((o) => {
+        const n = o + 1000;
+
+        if (item && n >= item.duration_ms) {
+          refetch();
+          return 0;
+        }
+
+        return n;
+      });
+    },
+    isPlaying ? 1000 : null
+  );
+
   useEffect(() => refetch(), []);
+  useEffect(() => setValue(progress), [progress]);
 
   const { mutate: seek } = useMutation({
     mutationFn: (pos: number) => {
