@@ -18,6 +18,7 @@ export default function Library() {
       <MenuItem onClick={goTo('Playlists', 'SavedPlaylists')}>
         Playlists
       </MenuItem>
+      <MenuItem onClick={goTo('Search', 'Search')}>Search</MenuItem>
     </Screen>
   );
 }

@@ -15,7 +15,8 @@ const SCREEN_MAP = {
   SavedAlbums: lazy(() => import('./saved-albums')),
   SavedArtists: lazy(() => import('./saved-artists')),
   SavedPlaylists: lazy(() => import('./saved-playlists')),
-  SavedTracks: lazy(() => import('./saved-tracks'))
+  SavedTracks: lazy(() => import('./saved-tracks')),
+  Search: lazy(() => import('./search'))
 };
 
 export type MenuType = keyof typeof SCREEN_MAP;
