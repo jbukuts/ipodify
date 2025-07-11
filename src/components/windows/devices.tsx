@@ -2,13 +2,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Screen from '../shared/screen';
 import { sdk } from '#/lib/sdk';
 import MenuItem from '../shared/menu-item';
-import usePlaybackState from '#/lib/store/now-playing';
+import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import { Check } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { QUERY_KEYS } from '#/lib/query-enum';
 
 export default function Devices() {
-  const { activeDeviceId, refetch } = usePlaybackState(
+  const { activeDeviceId, refetch } = usePlaybackStateStore(
     useShallow((s) => ({ activeDeviceId: s.device?.id, refetch: s.refetch }))
   );
 

@@ -1,5 +1,5 @@
 import usePalette from '#/hooks/usePalette';
-import usePlaybackState from '#/lib/store/now-playing';
+import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import generateBlobPath from 'useless-blobs';
@@ -18,7 +18,7 @@ const PATHS = Array.from({ length: 27 }, () =>
 );
 
 export default function Blobs() {
-  const { images } = usePlaybackState(
+  const { images } = usePlaybackStateStore(
     useShallow(({ item, isPlaying }) => ({
       images: item && 'album' in item ? item.album.images : null,
       isPlaying

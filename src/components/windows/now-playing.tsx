@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useState } from 'react';
 import Screen from '../shared/screen';
-import usePlaybackState from '#/lib/store/now-playing';
+import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import useAddWindow from '#/hooks/useAddWindow';
 import { Slider } from '../shared/slider';
 import { useShallow } from 'zustand/react/shallow';
@@ -25,7 +25,7 @@ function formatTime(ms: number) {
 }
 
 function InternalNowPlaying() {
-  const { item, progress, isPlaying, refetch } = usePlaybackState(
+  const { item, progress, isPlaying, refetch } = usePlaybackStateStore(
     useShallow(({ item, progress, isPlaying, refetch }) => ({
       progress,
       item,

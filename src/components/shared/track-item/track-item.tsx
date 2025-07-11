@@ -3,7 +3,7 @@ import { ContextMenu, ContextMenuTrigger } from '../context-menu';
 import MenuItem from '../menu-item';
 import { memo, useState, type ComponentProps } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import useNowPlaying from '#/lib/store/now-playing';
+import useNowPlaying from '#/lib/store/playback-state-store';
 import { Volume1 } from 'lucide-react';
 import TrackContextMenu from './track-context-menu';
 

@@ -1,5 +1,5 @@
 import { sdk } from '#/lib/sdk';
-import usePlaybackState from '#/lib/store/now-playing';
+import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import { useMutation } from '@tanstack/react-query';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -8,14 +8,15 @@ import { Logger } from '#/lib/logger';
 const logger = new Logger('useTogglePlayback');
 
 export function useTogglePlayback() {
-  const { refetch, isPlaying, setIsPlaying, cancelQuery } = usePlaybackState(
-    useShallow(({ isPlaying, refetch, setIsPlaying, cancelQuery }) => ({
-      isPlaying,
-      setIsPlaying,
-      refetch,
-      cancelQuery
-    }))
-  );
+  const { refetch, isPlaying, setIsPlaying, cancelQuery } =
+    usePlaybackStateStore(
+      useShallow(({ isPlaying, refetch, setIsPlaying, cancelQuery }) => ({
+        isPlaying,
+        setIsPlaying,
+        refetch,
+        cancelQuery
+      }))
+    );
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {

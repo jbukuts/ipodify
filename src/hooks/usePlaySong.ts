@@ -1,6 +1,6 @@
 import { QUERY_KEYS } from '#/lib/query-enum';
 import { sdk } from '#/lib/sdk';
-import usePlaybackState from '#/lib/store/now-playing';
+import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
@@ -16,7 +16,7 @@ type PlaySongOpts = { deviceId?: string } & (
 
 export default function usePlaySong() {
   const client = useQueryClient();
-  const refetch = usePlaybackState(useShallow((s) => s.refetch));
+  const refetch = usePlaybackStateStore(useShallow((s) => s.refetch));
 
   // const { mutate } = useMutation({
   //   mutationFn: async (opts: PlaySongOpts) => {

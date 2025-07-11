@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { sdk } from '../sdk';
-import usePlaybackState from '../store/now-playing';
+import usePlaybackStateStore from '../store/playback-state-store';
 import { useShallow } from 'zustand/react/shallow';
 import { toast } from 'sonner';
 import { PlaybackContext, type PlaybackSDKContext } from './context';
@@ -38,7 +38,7 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const [sdkPlayerId, setSDKPlayerID] = useState<string>();
 
-  const { device, refetch } = usePlaybackState(
+  const { device, refetch } = usePlaybackStateStore(
     useShallow(({ device, refetch }) => ({ device, refetch }))
   );
 

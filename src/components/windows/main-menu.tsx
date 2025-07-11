@@ -1,12 +1,12 @@
 import useAddWindow from '#/hooks/useAddWindow';
-import usePlaybackState from '#/lib/store/now-playing';
+import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import { useShallow } from 'zustand/react/shallow';
 import MenuItem from '../shared/menu-item';
 import Screen from '../shared/screen';
 
 export default function MainMenu() {
   const goTo = useAddWindow();
-  const isNull = usePlaybackState(useShallow((s) => s.item === null));
+  const isNull = usePlaybackStateStore(useShallow((s) => s.item === null));
 
   return (
     <Screen>

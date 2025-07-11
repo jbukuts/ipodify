@@ -4,7 +4,6 @@ import { cn } from '#/lib/utils';
 import MenuItem from './shared/menu-item';
 import { Pause, Play, Volume1 } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
-import useNowPlaying from '#/lib/store/now-playing';
 import { useTogglePlayback } from '#/hooks/useTogglePlayback';
 import useWindowTitle from '#/hooks/useWindowTitle';
 import usePalette from '#/hooks/usePalette';
@@ -12,7 +11,7 @@ import IconButton from './shared/icon-button';
 import Blobs from './blobs';
 import SCREEN_MAP from './windows';
 import useAddWindow from '#/hooks/useAddWindow';
-import usePlaybackState from '#/lib/store/now-playing';
+import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import { PlaybackSDKProvider } from '#/lib/playback-sdk-context';
 import Screen from './shared/screen';
 
@@ -24,10 +23,9 @@ function calcOverlayColor(color: [number, number, number]) {
 
 function AlbumArt() {
   const goTo = useAddWindow();
-  const { images } = useNowPlaying(
+  const { images } = usePlaybackStateStore(
     useShallow(({ item }) => ({
-      images: item && 'album' in item ? item.album.images : null,
-      album: item && 'album' in item ? item.album : null
+      images: item && 'album' in item ? item.album.images : null
     }))
   );
 
@@ -66,7 +64,7 @@ function Head() {
     }))
   );
 
-  const { device } = useNowPlaying(
+  const { device } = usePlaybackStateStore(
     useShallow(({ device }) => ({
       device
     }))
@@ -98,7 +96,7 @@ function Head() {
 
 function NoDeviceButton() {
   const goTo = useAddWindow();
-  const { device } = usePlaybackState(
+  const { device } = usePlaybackStateStore(
     useShallow(({ device, startPolling, stopPolling }) => ({
       device,
       startPolling,
@@ -122,7 +120,7 @@ function NoDeviceButton() {
 }
 
 export default function Main() {
-  const { startPolling, stopPolling } = usePlaybackState(
+  const { startPolling, stopPolling } = usePlaybackStateStore(
     useShallow(({ startPolling, stopPolling }) => ({
       startPolling,
       stopPolling

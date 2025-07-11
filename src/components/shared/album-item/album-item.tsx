@@ -1,4 +1,4 @@
-import usePlaybackState from '#/lib/store/now-playing';
+import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import { memo, useState, type ComponentProps } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import MenuItem from '../menu-item';
@@ -17,7 +17,7 @@ const AlbumItem = memo((props: AlbumItemProps) => {
 
   const [open, setOpen] = useState(false);
   const goTo = useAddWindow();
-  const item = usePlaybackState(
+  const item = usePlaybackStateStore(
     useShallow(({ item }) => (item && 'album' in item ? item.album : undefined))
   );
 
