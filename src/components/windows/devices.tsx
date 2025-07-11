@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Screen from '../shared/screen';
 import { sdk } from '#/lib/sdk';
 import MenuItem from '../shared/menu-item';
@@ -12,17 +12,21 @@ export default function Devices() {
     useShallow((s) => ({ activeDeviceId: s.device?.id, refetch: s.refetch }))
   );
 
+  const client = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: [QUERY_KEYS.device.LIST],
     queryFn: () => sdk.player.getAvailableDevices()
   });
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (id: string) => {
       if (activeDeviceId === id) return Promise.resolve();
       return sdk.player.transferPlayback([id], false);
     },
-    onSettled: refetch
+    onSettled: () => {
+      client.invalidateQueries({ queryKey: [QUERY_KEYS.device.LIST] });
+      setTimeout(refetch, 500);
+    }
   });
 
   return (
@@ -45,7 +49,10 @@ export default function Devices() {
             <MenuItem
               key={id}
               icon={activeDeviceId === id ? Check : false}
-              onClick={() => mutate(id)}>
+              onClick={() => {
+                if (isPending) return;
+                mutate(id);
+              }}>
               {name}
             </MenuItem>
           );
