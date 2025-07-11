@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from 'react';
-import useWindowStore from '#/lib/store';
+import useWindowStore from '#/lib/store/window-store';
 import { cn } from '#/lib/utils';
 import MenuItem from './shared/menu-item';
 import { Pause, Play, Volume1 } from 'lucide-react';

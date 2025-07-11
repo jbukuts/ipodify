@@ -1,4 +1,4 @@
-import useWindowStore from '#/lib/store';
+import useWindowStore from '#/lib/store/window-store';
 import { useCallback } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 

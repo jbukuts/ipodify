@@ -1,18 +1,9 @@
 import MenuItem from '../shared/menu-item';
 import Screen from '../shared/screen';
-import useWindowStore from '#/lib/store';
-import { useShallow } from 'zustand/react/shallow';
-import { useCallback } from 'react';
+import useAddWindow from '#/hooks/useAddWindow';
 
 export default function Library() {
-  const addWindow = useWindowStore(useShallow((s) => s.addWindow));
-
-  const goTo = useCallback(
-    (...opts: Parameters<typeof addWindow>) => {
-      return () => addWindow(...opts);
-    },
-    [addWindow]
-  );
+  const goTo = useAddWindow();
 
   return (
     <Screen>

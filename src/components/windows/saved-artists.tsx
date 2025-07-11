@@ -19,13 +19,10 @@ function ArtistItem(
   const { artist, ...rest } = props;
   const { name, id } = artist;
 
-  const addWindow = useAddWindow();
+  const goTo = useAddWindow();
 
   return (
-    <MenuItem
-      {...rest}
-      text={undefined}
-      onClick={addWindow(name, 'Artist', { id })}>
+    <MenuItem {...rest} text={undefined} onClick={goTo(name, 'Artist', { id })}>
       {name}
     </MenuItem>
   );

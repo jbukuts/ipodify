@@ -1,4 +1,4 @@
-import useWindowStore from '#/lib/store';
+import useWindowStore from '#/lib/store/window-store';
 import { useState } from 'react';
 import { useInterval } from 'usehooks-ts';
 import { useShallow } from 'zustand/react/shallow';
