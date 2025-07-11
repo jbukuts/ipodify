@@ -13,7 +13,8 @@ enum AlbumKey {
 enum ArtistKey {
   TRACKS = 'artist_tracks',
   ALBUMS = 'artist_albums',
-  SAVED_LIST = 'artist_saved'
+  SAVED_LIST = 'artist_saved',
+  RELATED = 'artist_related'
 }
 
 enum PlaylistKey {

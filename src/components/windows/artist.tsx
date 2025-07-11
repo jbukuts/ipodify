@@ -12,7 +12,16 @@ import { QUERY_KEYS } from '#/lib/query-enum';
 
 const ALBUM_GROUPS = ['album', 'single', 'appears_on', 'compilation'] as const;
 
-function ArtistAlbums(props: { id: string }) {
+enum Tab {
+  TRACKS = 'tracks',
+  ALBUMS = 'ablums',
+  RELATED = 'related',
+  ABOUT = 'about'
+}
+
+type ArtistTabProps = { id: string };
+
+function ArtistAlbums(props: ArtistTabProps) {
   const { id } = props;
   const [group, setGroup] = useState<(typeof ALBUM_GROUPS)[number]>('album');
 
@@ -37,7 +46,7 @@ function ArtistAlbums(props: { id: string }) {
   };
 
   return (
-    <TabsContent value='albums'>
+    <TabsContent value={Tab.ALBUMS}>
       <BetterVirtualScreen
         loaded={data.length + 1}
         loading={isLoading}
@@ -72,7 +81,7 @@ function ArtistAlbums(props: { id: string }) {
   );
 }
 
-function ArtistTracks(props: { id: string }) {
+function ArtistTracks(props: ArtistTabProps) {
   const { id } = props;
 
   const playSong = usePlaySong();
@@ -89,7 +98,7 @@ function ArtistTracks(props: { id: string }) {
 
   return (
     <Screen loading={isLoading} asChild>
-      <TabsContent value='songs'>
+      <TabsContent value={Tab.TRACKS}>
         {data.map((t, idx) => (
           <TrackItem
             key={idx}
@@ -108,12 +117,11 @@ function InternalArtist(props: { id: string }) {
 
   return (
     <Screen asChild className='overflow-hidden pt-0'>
-      <Tabs defaultValue='songs'>
+      <Tabs defaultValue={Tab.TRACKS}>
         <TabsList className='w-full'>
-          <TabsTrigger value='meta'>Meta</TabsTrigger>
-          <TabsTrigger value='songs'>Top Songs</TabsTrigger>
-          <TabsTrigger value='albums'>Albums</TabsTrigger>
-          <TabsTrigger value='related'>Related</TabsTrigger>
+          <TabsTrigger value={Tab.TRACKS}>Top Songs</TabsTrigger>
+          <TabsTrigger value={Tab.ALBUMS}>Albums</TabsTrigger>
+          <TabsTrigger value={Tab.ABOUT}>About</TabsTrigger>
         </TabsList>
 
         <TabsContent value='meta'></TabsContent>

@@ -32,6 +32,7 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
   const { children } = props;
 
   const script = useSDKReady();
+  const [allow] = useState(false);
   const [player, setPlayer] = useState<Spotify.Player>();
   const [current, setCurrent] = useState<PlaybackSDKContext['current']>();
   const [ready, setReady] = useState(false);
@@ -42,7 +43,7 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    if (!script) return;
+    if (!script || !allow) return;
     console.log('create player!');
 
     const p = new Spotify.Player({
@@ -113,7 +114,7 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
       p.removeListener('authentication_error', handleError);
       p.removeListener('account_error', handleError);
     };
-  }, [script]);
+  }, [script, allow]);
 
   return (
     <PlaybackContext.Provider value={{ player, ready, current, sdkPlayerId }}>

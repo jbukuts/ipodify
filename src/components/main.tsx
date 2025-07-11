@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import useWindowStore from '#/lib/store';
 import { cn } from '#/lib/utils';
 import MenuItem from './shared/menu-item';
@@ -14,6 +14,7 @@ import SCREEN_MAP from './windows';
 import useAddWindow from '#/hooks/useAddWindow';
 import usePlaybackState from '#/lib/store/now-playing';
 import { PlaybackSDKProvider } from '#/lib/playback-sdk-context';
+import Screen from './shared/screen';
 
 function calcOverlayColor(color: [number, number, number]) {
   const [r, g, b] = color;
@@ -112,7 +113,7 @@ export default function Main() {
   );
 
   useEffect(() => {
-    // startPolling();
+    startPolling();
     return () => stopPolling();
   }, [startPolling, stopPolling]);
 
@@ -155,7 +156,9 @@ export default function Main() {
                   )}
                   inert={isActiveWindow}
                   data-window={idx}>
-                  <Comp {...props}></Comp>
+                  <Suspense fallback={<Screen loading />}>
+                    <Comp {...props}></Comp>
+                  </Suspense>
                 </div>
               );
             })}
