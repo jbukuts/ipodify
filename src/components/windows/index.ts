@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 
 const SCREEN_MAP = {
+  Test: lazy(() => import('./test')),
   Album: lazy(() => import('./album')),
   Artist: lazy(() => import('./artist')),
   Devices: lazy(() => import('./devices')),

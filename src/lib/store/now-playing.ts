@@ -35,7 +35,7 @@ const usePlaybackState = create<NowPlayingStore>((set) => {
   };
 
   observer.subscribe((result) => {
-    if (result.data === undefined) {
+    if (!result.data) {
       return set({
         isPlaying: false,
         device: null,
