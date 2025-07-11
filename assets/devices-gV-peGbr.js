@@ -1,6 +1,0 @@
-import{c as l,u,b as f,Q as m,d as v,j as r,M as h,s as a}from"./index-DQnMSIcK.js";import{u as p}from"./useQuery-BNxEzC8E.js";import{S as x}from"./screen-BV_CBvZc.js";import"./useBaseQuery-C0PbdfXh.js";/**
- * @license lucide-react v0.515.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */const g=[["path",{d:"M20 6 9 17l-5-5",key:"1gmf2c"}]],y=l("check",g);function I(){const{activeDeviceId:c,refetch:i}=u(f(e=>{var t;return{activeDeviceId:(t=e.device)==null?void 0:t.id,refetch:e.refetch}})),{data:s,isLoading:n}=p({queryKey:[m.device.LIST],queryFn:()=>a.player.getAvailableDevices()}),{mutate:o}=v({mutationFn:e=>c===e?Promise.resolve():a.player.transferPlayback([e],!1),onSettled:i});return r.jsxs(x,{loading:n,children:[s&&s.devices.length===0&&r.jsxs("div",{className:"flex size-full flex-col items-center justify-center gap-4",children:[r.jsx("p",{className:"text-fg",children:"No active devices found"}),r.jsx("button",{className:"rounded-md border-[0.125rem] border-fg p-1.5 text-sm text-fg transition-colors hover:cursor-pointer hover:bg-fg hover:text-bg",children:"Create new device"})]}),s&&s.devices.length>0&&s.devices.map(e=>{const{id:t,name:d}=e;if(t)return r.jsx(h,{icon:c===t?y:!1,onClick:()=>o(t),children:d},t)})]})}export{I as default};
