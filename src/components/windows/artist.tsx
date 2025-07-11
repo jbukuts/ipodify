@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../shared/tabs';
 import AlbumItem from '../shared/album-item';
 import { cn } from '#/lib/utils';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
+import { QUERY_KEYS } from '#/lib/query-enum';
 
 const ALBUM_GROUPS = ['album', 'single', 'appears_on', 'compilation'] as const;
 
@@ -21,7 +22,7 @@ function ArtistAlbums(props: { id: string }) {
     hasNextPage,
     fetchNextPage
   } = useInfiniteQuery({
-    queryKey: ['artist_albums', group, id],
+    queryKey: [QUERY_KEYS.artist.ALBUMS, group, id],
     queryFn: ({ pageParam }) =>
       sdk.artists.albums(id, group, 'US', 50, pageParam),
     initialPageParam: 0,
@@ -76,7 +77,7 @@ function ArtistTracks(props: { id: string }) {
 
   const playSong = usePlaySong();
   const { data = [], isLoading } = useQuery({
-    queryKey: ['artist_tracks', id],
+    queryKey: [QUERY_KEYS.artist.TRACKS, id],
     queryFn: () => sdk.artists.topTracks(id, 'US'),
     select: (d) => d.tracks
   });

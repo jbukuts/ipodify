@@ -5,10 +5,11 @@ import BetterVirtualScreen from '../shared/better-virtual-screen';
 import TrackItem from '../shared/track-item';
 import usePlaySong from '#/hooks/usePlaySong';
 import { useCallback, useMemo } from 'react';
+import { QUERY_KEYS } from '#/lib/query-enum';
 
 function useSavedTracks() {
   const { data, ...rest } = useInfiniteQuery({
-    queryKey: ['liked_songs'],
+    queryKey: [QUERY_KEYS.track.SAVED_LIST],
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>
       sdk.currentUser.tracks.savedTracks(50, pageParam),

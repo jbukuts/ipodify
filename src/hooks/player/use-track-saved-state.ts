@@ -1,4 +1,5 @@
 import type { TrackItemProps } from '#/components/shared/track-item';
+import { QUERY_KEYS } from '#/lib/query-enum';
 import { sdk } from '#/lib/sdk';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -15,7 +16,7 @@ export default function useTrackSavedState(opts: {
 
   const client = useQueryClient();
   const { data: isSaved, refetch } = useQuery({
-    queryKey: ['is-liked', id],
+    queryKey: [QUERY_KEYS.track.IS_SAVED, id],
     initialData: [initial ?? true],
     queryFn: () => sdk.currentUser.tracks.hasSavedTracks([id]),
     select: (d) => d[0],
@@ -29,7 +30,7 @@ export default function useTrackSavedState(opts: {
       });
     },
     onSuccess: () => {
-      client.invalidateQueries({ queryKey: ['liked_songs'] });
+      client.invalidateQueries({ queryKey: [QUERY_KEYS.track.SAVED_LIST] });
       setTimeout(refetch, 500);
       toast.success(
         `${isSaved ? 'Removed' : 'Added'} ${name} ${isSaved ? 'from' : 'to'} Liked Songs`

@@ -1,3 +1,4 @@
+import { QUERY_KEYS } from '#/lib/query-enum';
 import { sdk } from '#/lib/sdk';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -15,10 +16,10 @@ export default function useRemoveFromPlaylist() {
       toast.success('Removed item from playlist');
       setTimeout(() => {
         client.invalidateQueries({
-          queryKey: ['playlist', d.playlistId]
+          queryKey: [QUERY_KEYS.playlist.GET, d.playlistId]
         });
         client.invalidateQueries({
-          queryKey: ['playlist-tracks', d.playlistId]
+          queryKey: [QUERY_KEYS.playlist.TRACKS, d.playlistId]
         });
       }, 1000);
     },

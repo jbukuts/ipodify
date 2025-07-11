@@ -1,49 +1,48 @@
 import { sdk } from '#/lib/sdk';
-import usePlaybackState, {
-  PLAYBACK_STATE_QUERY_KEY
-} from '#/lib/store/now-playing';
+import usePlaybackState from '#/lib/store/now-playing';
 import { useMutation } from '@tanstack/react-query';
 import { useShallow } from 'zustand/react/shallow';
-import { queryClient } from '#/lib/query';
-import type { PlaybackState } from '@spotify/web-api-ts-sdk';
+
+import { Logger } from '#/lib/logger';
+
+const logger = new Logger('useTogglePlayback');
 
 export function useTogglePlayback() {
-  const { refetch, isPlaying } = usePlaybackState(
-    useShallow(({ isPlaying, refetch }) => ({
+  const { refetch, isPlaying, setIsPlaying, cancelQuery } = usePlaybackState(
+    useShallow(({ isPlaying, refetch, setIsPlaying, cancelQuery }) => ({
       isPlaying,
-      refetch
+      setIsPlaying,
+      refetch,
+      cancelQuery
     }))
   );
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      const p = queryClient.getQueryData([PLAYBACK_STATE_QUERY_KEY]);
+      const previousState = isPlaying;
 
-      queryClient.setQueryData(
-        [PLAYBACK_STATE_QUERY_KEY],
-        (old: PlaybackState) => ({
-          ...old,
-          is_playing: !isPlaying
-        })
-      );
+      await cancelQuery();
+      setIsPlaying(!previousState);
 
       if (isPlaying) await sdk.player.pausePlayback('');
       else await sdk.player.startResumePlayback('');
 
-      return p;
+      return previousState;
     },
-    onError: (err, _, context: PlaybackState | null | undefined) => {
-      console.error(err);
-      if (!context) return;
-      queryClient.setQueryData([PLAYBACK_STATE_QUERY_KEY], context);
-    },
-    onSuccess: () => {
-      console.log('playback toggle. need to refetch');
+    onError: (err, _, context: boolean | undefined) => {
+      logger.error(err);
+      if (context) setIsPlaying(context);
     },
     onSettled: () => {
-      setTimeout(refetch, 250);
+      setTimeout(() => refetch(), 500);
     }
   });
 
-  return { toggle: mutate, isPlaying };
+  return {
+    toggle: () => {
+      if (isPending) return;
+      mutate();
+    },
+    isPlaying
+  };
 }

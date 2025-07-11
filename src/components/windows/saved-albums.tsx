@@ -2,6 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { sdk } from '#/lib/sdk';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
 import AlbumItem from '../shared/album-item';
+import { QUERY_KEYS } from '#/lib/query-enum';
 
 export default function SavedAlbums() {
   const {
@@ -10,7 +11,7 @@ export default function SavedAlbums() {
     isLoading,
     hasNextPage
   } = useInfiniteQuery({
-    queryKey: ['saved_albums'],
+    queryKey: [QUERY_KEYS.album.SAVED_LIST],
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>
       sdk.currentUser.albums.savedAlbums(50, pageParam),

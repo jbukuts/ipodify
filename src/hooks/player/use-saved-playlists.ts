@@ -1,3 +1,4 @@
+import { QUERY_KEYS } from '#/lib/query-enum';
 import { sdk } from '#/lib/sdk';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
@@ -11,14 +12,14 @@ export default function useSavedPlaylists(opts: UsePlaylistsOpts) {
   const { enabled = false, ownerOnly = false } = opts;
 
   const { data: profile } = useQuery({
-    queryKey: ['profile'],
+    queryKey: [QUERY_KEYS.user.PROFILE, 'me'],
     queryFn: () => sdk.currentUser.profile(),
     staleTime: Infinity,
     enabled: ownerOnly
   });
 
   const { data: playlists, ...rest } = useInfiniteQuery({
-    queryKey: ['saved_playlists'],
+    queryKey: [QUERY_KEYS.playlist.SAVED_LIST],
     queryFn: async ({ pageParam }) => {
       return sdk.currentUser.playlists.playlists(50, pageParam);
     },

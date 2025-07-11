@@ -5,6 +5,7 @@ import Screen from '../shared/screen';
 import TrackItem from '../shared/track-item';
 import usePlaySong from '#/hooks/usePlaySong';
 import { useMemo } from 'react';
+import { QUERY_KEYS } from '#/lib/query-enum';
 
 interface UseRecentlyPlayedOpts {
   timestamp?: number;
@@ -15,7 +16,7 @@ function useRecentlyPlayed(opts?: UseRecentlyPlayedOpts) {
   const { timestamp = Date.now(), duplicates = false } = opts ?? {};
 
   const { data, ...rest } = useQuery({
-    queryKey: ['recently_played'],
+    queryKey: [QUERY_KEYS.player.RECENTLY_PLAYED],
     queryFn: () =>
       sdk.player.getRecentlyPlayedTracks(50, {
         type: 'before',

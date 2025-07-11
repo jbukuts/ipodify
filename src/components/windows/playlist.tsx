@@ -5,10 +5,11 @@ import TrackItem from '../shared/track-item';
 import usePlaySong from '#/hooks/usePlaySong';
 import type { Track } from '@spotify/web-api-ts-sdk';
 import MenuItem from '../shared/menu-item';
+import { QUERY_KEYS } from '#/lib/query-enum';
 
 function usePlaylistTracks(id: string) {
   const { data: playlist, isLoading } = useQuery({
-    queryKey: ['playlist', id],
+    queryKey: [QUERY_KEYS.playlist.GET, id],
     queryFn: () => sdk.playlists.getPlaylist(id, 'US')
   });
 
@@ -17,7 +18,7 @@ function usePlaylistTracks(id: string) {
     fetchNextPage,
     hasNextPage
   } = useInfiniteQuery({
-    queryKey: ['playlist-tracks', id],
+    queryKey: [QUERY_KEYS.playlist.TRACKS, id],
     queryFn: ({ pageParam }) =>
       sdk.playlists.getPlaylistItems(id, 'US', undefined, 50, pageParam),
     initialPageParam: 100,
@@ -27,7 +28,7 @@ function usePlaylistTracks(id: string) {
   });
 
   const { data: profile } = useQuery({
-    queryKey: ['profile'],
+    queryKey: [QUERY_KEYS.user.PROFILE],
     queryFn: () => sdk.currentUser.profile()
   });
 

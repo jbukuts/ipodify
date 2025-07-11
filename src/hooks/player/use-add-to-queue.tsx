@@ -1,3 +1,4 @@
+import { QUERY_KEYS } from '#/lib/query-enum';
 import { sdk } from '#/lib/sdk';
 import type { Episode, SimplifiedTrack, Track } from '@spotify/web-api-ts-sdk';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -20,7 +21,7 @@ export default function useAddToQueue() {
       toast.error('Failed to add to queue');
     },
     onSettled: () => {
-      client.invalidateQueries({ queryKey: ['queue'] });
+      client.invalidateQueries({ queryKey: [QUERY_KEYS.player.QUEUE] });
     }
   });
 

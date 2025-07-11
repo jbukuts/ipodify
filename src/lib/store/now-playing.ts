@@ -1,13 +1,9 @@
 import { create } from 'zustand';
 import { sdk } from '../sdk';
-import type {
-  Context,
-  Device,
-  PlaybackState,
-  TrackItem
-} from '@spotify/web-api-ts-sdk';
+import type { Context, Device, TrackItem } from '@spotify/web-api-ts-sdk';
+import { Logger } from '../logger';
 import { queryClient } from '../query';
-import { QueryObserver } from '@tanstack/react-query';
+import { QUERY_KEYS } from '../query-enum';
 
 interface NowPlayingStore {
   isPlaying: boolean;
@@ -15,27 +11,28 @@ interface NowPlayingStore {
   item: TrackItem | null;
   context: Context | null;
   progress: number;
+  setIsPlaying: (v: boolean) => void;
   refetch: () => void;
   startPolling: () => void;
   stopPolling: () => void;
+  cancelQuery: () => Promise<void>;
 }
 
-export const PLAYBACK_STATE_QUERY_KEY = 'now_playing_global';
-
-const observer = new QueryObserver(queryClient, {
-  queryKey: [PLAYBACK_STATE_QUERY_KEY]
-});
+export const PLAYBACK_STATE_QUERY_KEY = QUERY_KEYS.player.PLAYBACK_STATE;
+const REFETCH_INTERVAL = 10_000;
 
 const usePlaybackState = create<NowPlayingStore>((set) => {
   let intervalId: null | NodeJS.Timeout = null;
+  const logger = new Logger('usePlaybackState');
 
   const fetchData = async () => {
-    const d = await sdk.player.getPlaybackState().catch(() => undefined);
-    queryClient.setQueryData([PLAYBACK_STATE_QUERY_KEY], () => d);
-  };
+    logger.debug('Fetching playback state');
+    const d = await queryClient.fetchQuery({
+      queryKey: [PLAYBACK_STATE_QUERY_KEY],
+      queryFn: () => sdk.player.getPlaybackState().catch(() => undefined)
+    });
 
-  observer.subscribe((result) => {
-    if (!result.data) {
+    if (!d) {
       return set({
         isPlaying: false,
         device: null,
@@ -43,9 +40,7 @@ const usePlaybackState = create<NowPlayingStore>((set) => {
         context: null
       });
     }
-    const { item, is_playing, device, context, progress_ms } =
-      result.data as PlaybackState;
-
+    const { item, is_playing, device, context, progress_ms } = d;
     set({
       isPlaying: is_playing,
       device,
@@ -53,7 +48,7 @@ const usePlaybackState = create<NowPlayingStore>((set) => {
       item,
       progress: progress_ms
     });
-  });
+  };
 
   return {
     isPlaying: false,
@@ -61,19 +56,26 @@ const usePlaybackState = create<NowPlayingStore>((set) => {
     item: null,
     context: null,
     progress: 0,
+    setIsPlaying: (v: boolean) => {
+      set({ isPlaying: v });
+    },
     refetch: () => {
-      console.log('fetching!');
       fetchData();
     },
     startPolling: () => {
       if (intervalId) return;
       fetchData();
-      intervalId = setInterval(fetchData, 5000);
+      intervalId = setInterval(fetchData, REFETCH_INTERVAL);
     },
     stopPolling: () => {
       if (!intervalId) return;
       clearInterval(intervalId);
       intervalId = null;
+    },
+    cancelQuery: async () => {
+      await queryClient.cancelQueries({
+        queryKey: [PLAYBACK_STATE_QUERY_KEY]
+      });
     }
   };
 });

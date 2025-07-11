@@ -7,13 +7,14 @@ import { Disc3 } from 'lucide-react';
 import TrackItem from '../shared/track-item';
 import usePlaySong from '#/hooks/usePlaySong';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
+import { QUERY_KEYS } from '#/lib/query-enum';
 
 /**
  * Get album metadata and tracks for a given album
  */
 function useAlbumTracks(id: string, market: Market = 'US') {
   const { data: albumData, isLoading } = useQuery({
-    queryKey: ['album', id],
+    queryKey: [QUERY_KEYS.album.GET, id],
     queryFn: () => sdk.albums.get(id, market)
   });
 
@@ -22,7 +23,7 @@ function useAlbumTracks(id: string, market: Market = 'US') {
     hasNextPage,
     fetchNextPage
   } = useInfiniteQuery({
-    queryKey: ['album_tracks', id],
+    queryKey: [QUERY_KEYS.album.TRACKS, id],
     initialPageParam: 50,
     queryFn: ({ pageParam }) => sdk.albums.tracks(id, 'US', 50, pageParam),
     getNextPageParam: (lastPage) =>

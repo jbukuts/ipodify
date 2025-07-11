@@ -1,3 +1,4 @@
+import { QUERY_KEYS } from '#/lib/query-enum';
 import { sdk } from '#/lib/sdk';
 import type {
   Album,
@@ -24,7 +25,11 @@ export default function useAddToPlaylist() {
       setTimeout(() => {
         client.invalidateQueries({
           refetchType: 'all',
-          queryKey: ['playlist-tracks', 'playlist', v.playlist.id]
+          queryKey: [QUERY_KEYS.playlist.GET, v.playlist.id]
+        });
+        client.invalidateQueries({
+          refetchType: 'all',
+          queryKey: [QUERY_KEYS.playlist.TRACKS, v.playlist.id]
         });
       }, 1000);
       toast.success('Added to playlist', {

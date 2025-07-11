@@ -65,21 +65,13 @@ function Head() {
     }))
   );
 
-  const { startPolling, stopPolling, device } = useNowPlaying(
-    useShallow(({ isPlaying, startPolling, stopPolling, device }) => ({
-      isPlaying,
-      startPolling,
-      stopPolling,
+  const { device } = useNowPlaying(
+    useShallow(({ device }) => ({
       device
     }))
   );
   const title = useWindowTitle();
   const { toggle, isPlaying } = useTogglePlayback();
-
-  useEffect(() => {
-    startPolling();
-    return () => stopPolling();
-  }, [startPolling, stopPolling]);
 
   const goBack = () => removeWindow();
 
@@ -105,13 +97,24 @@ function Head() {
 
 export default function Main() {
   const goTo = useAddWindow();
-  const device = usePlaybackState(useShallow((s) => s.device));
+  const { device, startPolling, stopPolling } = usePlaybackState(
+    useShallow(({ device, startPolling, stopPolling }) => ({
+      device,
+      startPolling,
+      stopPolling
+    }))
+  );
   const { windows, windowsLength } = useWindowStore(
     useShallow(({ windows, windowTitles }) => ({
       windows,
       windowsLength: windowTitles.length
     }))
   );
+
+  useEffect(() => {
+    // startPolling();
+    return () => stopPolling();
+  }, [startPolling, stopPolling]);
 
   return (
     <PlaybackSDKProvider>

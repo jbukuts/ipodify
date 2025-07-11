@@ -5,6 +5,7 @@ import MenuItem from '../shared/menu-item';
 import usePlaybackState from '#/lib/store/now-playing';
 import { Check } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
+import { QUERY_KEYS } from '#/lib/query-enum';
 
 export default function Devices() {
   const { activeDeviceId, refetch } = usePlaybackState(
@@ -12,12 +13,11 @@ export default function Devices() {
   );
 
   const { data, isLoading } = useQuery({
-    queryKey: ['devices'],
+    queryKey: [QUERY_KEYS.device.LIST],
     queryFn: () => sdk.player.getAvailableDevices()
   });
 
   const { mutate } = useMutation({
-    mutationKey: ['set-devices'],
     mutationFn: (id: string) => {
       if (activeDeviceId === id) return Promise.resolve();
       return sdk.player.transferPlayback([id], false);

@@ -1,3 +1,4 @@
+import { QUERY_KEYS } from '#/lib/query-enum';
 import { sdk } from '#/lib/sdk';
 import usePlaybackState from '#/lib/store/now-playing';
 import { useQueryClient } from '@tanstack/react-query';
@@ -49,7 +50,7 @@ export default function usePlaySong() {
       .then(() => {
         setTimeout(() => {
           refetch();
-          client.invalidateQueries({ queryKey: ['queue'] });
+          client.invalidateQueries({ queryKey: [QUERY_KEYS.player.QUEUE] });
         }, 250);
       })
       .catch((e) => {

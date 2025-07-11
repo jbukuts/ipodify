@@ -1,3 +1,4 @@
+import { QUERY_KEYS } from '#/lib/query-enum';
 import { sdk } from '#/lib/sdk';
 import type { Album, SimplifiedAlbum } from '@spotify/web-api-ts-sdk';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -12,7 +13,7 @@ export default function useAlbumSavedState(opts: {
 
   const client = useQueryClient();
   const { data: isSaved, refetch } = useQuery({
-    queryKey: ['has-saved-album', id],
+    queryKey: [QUERY_KEYS.album.IS_SAVED, id],
     queryFn: async () => {
       return sdk.currentUser.albums.hasSavedAlbums([id]);
     },
@@ -29,7 +30,7 @@ export default function useAlbumSavedState(opts: {
     },
     onSuccess: () => {
       setTimeout(refetch, 1000);
-      client.invalidateQueries({ queryKey: ['saved_albums'] });
+      client.invalidateQueries({ queryKey: [QUERY_KEYS.album.SAVED_LIST] });
       toast.success(
         `${isSaved ? 'Removed' : 'Added'} ${name} ${isSaved ? 'from' : 'to'} library`
       );

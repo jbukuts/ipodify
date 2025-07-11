@@ -5,6 +5,7 @@ import { useEffect, useMemo, type ComponentProps } from 'react';
 import type { Artist, Page } from '@spotify/web-api-ts-sdk';
 import MenuItem from '../shared/menu-item';
 import useAddWindow from '#/hooks/useAddWindow';
+import { QUERY_KEYS } from '#/lib/query-enum';
 
 interface UpdatedPage<T> extends Page<T> {
   cursors: { after?: string; before?: string };
@@ -32,7 +33,7 @@ function ArtistItem(
 
 export default function SavedArtists() {
   const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: ['saved-artists'],
+    queryKey: [QUERY_KEYS.artist.SAVED_LIST],
     initialPageParam: '',
     queryFn: ({ pageParam }) => {
       return sdk.currentUser.followedArtists(pageParam, 50) as T;
