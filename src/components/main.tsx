@@ -96,11 +96,34 @@ function Head() {
   );
 }
 
-export default function Main() {
+function NoDeviceButton() {
   const goTo = useAddWindow();
-  const { device, startPolling, stopPolling } = usePlaybackState(
+  const { device } = usePlaybackState(
     useShallow(({ device, startPolling, stopPolling }) => ({
       device,
+      startPolling,
+      stopPolling
+    }))
+  );
+
+  const windows = useWindowStore(useShallow(({ windows }) => windows));
+
+  return (
+    device === null &&
+    windows[windows.length - 1][0] !== 'Devices' && (
+      <button
+        className='fixed bottom-[calc(50%-13.5rem)] left-1/2 translate-[-50%] rounded-md border-[0.125rem] border-black px-2.5 py-1 font-mono text-xs font-semibold text-black hover:cursor-pointer'
+        type='button'
+        onClick={goTo('Devices', 'Devices')}>
+        Select a device
+      </button>
+    )
+  );
+}
+
+export default function Main() {
+  const { startPolling, stopPolling } = usePlaybackState(
+    useShallow(({ startPolling, stopPolling }) => ({
       startPolling,
       stopPolling
     }))
@@ -121,14 +144,7 @@ export default function Main() {
     <PlaybackSDKProvider>
       <Blobs />
       <AlbumArt />
-      {device === null && windows[windows.length - 1][0] !== 'Devices' && (
-        <button
-          className='fixed bottom-[calc(50%-13.5rem)] left-1/2 translate-[-50%] rounded-md border-[0.125rem] border-black px-2.5 py-1 font-mono text-xs font-semibold text-black hover:cursor-pointer'
-          type='button'
-          onClick={goTo('Devices', 'Devices')}>
-          Select a device
-        </button>
-      )}
+      <NoDeviceButton />
       <main className='custom-scroll relative flex h-[18.75rem] w-[25rem] flex-col border-[0.125rem] border-fg bg-bg p-3'>
         <Head />
         <div

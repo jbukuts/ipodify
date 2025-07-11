@@ -1,31 +1,11 @@
-import { sdk } from '#/lib/sdk';
 import type { Track } from '@spotify/web-api-ts-sdk';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
 import TrackItem from '../shared/track-item';
 import usePlaySong from '#/hooks/usePlaySong';
-import { useCallback, useMemo } from 'react';
-import { QUERY_KEYS } from '#/lib/query-enum';
+import { memo, useCallback } from 'react';
+import useSavedTracks from '#/hooks/player/use-saved-tracks';
 
-function useSavedTracks() {
-  const { data, ...rest } = useInfiniteQuery({
-    queryKey: [QUERY_KEYS.track.SAVED_LIST],
-    initialPageParam: 0,
-    queryFn: ({ pageParam }) =>
-      sdk.currentUser.tracks.savedTracks(50, pageParam),
-    getNextPageParam: (lastPage) =>
-      lastPage.next ? lastPage.offset + 50 : undefined
-  });
-
-  const flatTracks = useMemo(
-    () => (data ? data.pages.flatMap((d) => d.items) : []),
-    [data]
-  );
-
-  return { tracks: flatTracks, ...rest };
-}
-
-export default function SavedTracks() {
+function InternalSavedTracks() {
   const playSong = usePlaySong();
 
   const { tracks, hasNextPage, isLoading, fetchNextPage } = useSavedTracks();
@@ -63,3 +43,6 @@ export default function SavedTracks() {
     </BetterVirtualScreen>
   );
 }
+
+const SavedTracks = memo(InternalSavedTracks);
+export default SavedTracks;

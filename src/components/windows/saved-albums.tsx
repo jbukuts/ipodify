@@ -3,8 +3,9 @@ import { sdk } from '#/lib/sdk';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
 import AlbumItem from '../shared/album-item';
 import { QUERY_KEYS } from '#/lib/query-enum';
+import { memo } from 'react';
 
-export default function SavedAlbums() {
+function InternalSavedAlbums() {
   const {
     data = [],
     fetchNextPage,
@@ -33,3 +34,6 @@ export default function SavedAlbums() {
     </BetterVirtualScreen>
   );
 }
+
+const SavedAlbums = memo(InternalSavedAlbums);
+export default SavedAlbums;

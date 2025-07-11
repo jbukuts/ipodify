@@ -19,7 +19,7 @@ interface NowPlayingStore {
 }
 
 export const PLAYBACK_STATE_QUERY_KEY = QUERY_KEYS.player.PLAYBACK_STATE;
-const REFETCH_INTERVAL = 10_000;
+const REFETCH_INTERVAL = 5_000;
 
 const usePlaybackState = create<NowPlayingStore>((set) => {
   let intervalId: null | NodeJS.Timeout = null;

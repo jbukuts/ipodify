@@ -17,7 +17,9 @@ const AlbumItem = memo((props: AlbumItemProps) => {
 
   const [open, setOpen] = useState(false);
   const goTo = useAddWindow();
-  const item = usePlaybackState(useShallow((s) => s.item));
+  const item = usePlaybackState(
+    useShallow(({ item }) => (item && 'album' in item ? item.album : undefined))
+  );
 
   return (
     <ContextMenu onOpenChange={setOpen}>
@@ -26,9 +28,7 @@ const AlbumItem = memo((props: AlbumItemProps) => {
           style={style}
           onClick={goTo(album.name, 'Album', { id: album.id })}
           icon={
-            item && 'album' in item && item.album.id === album.id
-              ? [Volume, ChevronRight]
-              : undefined
+            item && item.id === album.id ? [Volume, ChevronRight] : undefined
           }>
           {album.name}
         </MenuItem>
