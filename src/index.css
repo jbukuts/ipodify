@@ -31,6 +31,10 @@
     color-scheme: dark;
   }
 
+  button {
+    @apply select-none;
+  }
+
   body {
     @apply relative flex h-screen w-full items-center justify-center transition-colors;
   }
@@ -60,8 +64,8 @@
       );
 
     background-size: 5px 5px;
-    opacity: 0.8;
-    mix-blend-mode: overlay;
+    opacity: 0.075;
+    mix-blend-mode: color-dodge;
 
   }
 

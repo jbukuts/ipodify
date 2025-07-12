@@ -1,12 +1,11 @@
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import useWindowStore from '#/lib/store/window-store';
 import { cn } from '#/lib/utils';
 import MenuItem from './shared/menu-item';
-import { Pause, Play, Volume1 } from 'lucide-react';
+import { Fullscreen, Minimize, Pause, Play, Volume1 } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useTogglePlayback } from '#/hooks/useTogglePlayback';
 import useWindowTitle from '#/hooks/useWindowTitle';
-import usePalette from '#/hooks/usePalette';
 import IconButton from './shared/icon-button';
 import Blobs from './blobs';
 import SCREEN_MAP from './windows';
@@ -15,12 +14,6 @@ import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import { PlaybackSDKProvider } from '#/lib/playback-sdk-context';
 import Screen from './shared/screen';
 
-function calcOverlayColor(color: [number, number, number]) {
-  const [r, g, b] = color;
-  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-  return brightness > 128 ? 'black' : 'white';
-}
-
 function AlbumArt() {
   const goTo = useAddWindow();
   const { images } = usePlaybackStateStore(
@@ -28,20 +21,6 @@ function AlbumArt() {
       images: item && 'album' in item ? item.album.images : null
     }))
   );
-
-  const palette = usePalette(
-    images ? images[images.length - 1].url : undefined
-  );
-
-  useEffect(() => {
-    if (palette.length < 1) return;
-    const c = palette[0];
-    document.body.style.backgroundColor = `rgb(${c.join(',')})`;
-
-    const credit = document.getElementById('credit');
-    if (!credit) return;
-    credit.style.color = calcOverlayColor(c);
-  }, [palette]);
 
   return (
     <>
@@ -94,6 +73,40 @@ function Head() {
   );
 }
 
+function FullscreenButton() {
+  const [fullscreen, setFullScreen] = useState(false);
+
+  useEffect(() => {
+    const onFullScreenChange = () => {
+      setFullScreen(Boolean(document.fullscreenElement));
+    };
+
+    document.addEventListener('fullscreenchange', onFullScreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', onFullScreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  };
+
+  return (
+    <button
+      type='button'
+      title='toggle fullscreen'
+      className='fixed right-1 bottom-1 hover:cursor-pointer'
+      onClick={toggleFullscreen}>
+      {fullscreen ? <Minimize /> : <Fullscreen />}
+    </button>
+  );
+}
+
 function NoDeviceButton() {
   const goTo = useAddWindow();
   const { device } = usePlaybackStateStore(
@@ -143,6 +156,7 @@ export default function Main() {
       <Blobs />
       <AlbumArt />
       <NoDeviceButton />
+      <FullscreenButton />
       <main className='custom-scroll relative flex h-[18.75rem] w-[25rem] flex-col border-[0.125rem] border-fg bg-bg p-3'>
         <Head />
         <div
