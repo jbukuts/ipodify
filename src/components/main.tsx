@@ -7,7 +7,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useTogglePlayback } from '#/hooks/useTogglePlayback';
 import useWindowTitle from '#/hooks/useWindowTitle';
 import IconButton from './shared/icon-button';
-import Blobs from './blobs';
+import Blobs from './blobs/main';
 import SCREEN_MAP from './windows';
 import useAddWindow from '#/hooks/useAddWindow';
 import usePlaybackStateStore from '#/lib/store/playback-state-store';

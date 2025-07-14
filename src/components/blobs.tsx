@@ -10,9 +10,9 @@ const lerp = (start: number, end: number, t: number) => {
 
 const START_PALETTE = [
   [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0]
+  [0.2, 0.2, 0.2],
+  [0.5, 0.5, 0.5],
+  [1, 1, 1]
 ].flat();
 
 const vertexShaderSource = `
@@ -52,31 +52,40 @@ void main() {
     gl_FragColor = vec4(vec3(v), 1.0); // grayscale output
 }`;
 
-const ditherFragmentShader = `precision mediump float;
+const ditherFragmentShaderSource = `
+precision mediump float;
 
 uniform sampler2D u_texture;
 uniform vec2 u_resolution;
+varying vec2 v_uv;
 
-const float bayer4x4[16] = float[16](
-    0.0 / 16.0,  8.0 / 16.0,  2.0 / 16.0, 10.0 / 16.0,
-    12.0 / 16.0, 4.0 / 16.0, 14.0 / 16.0,  6.0 / 16.0,
-    3.0 / 16.0, 11.0 / 16.0,  1.0 / 16.0,  9.0 / 16.0,
-    15.0 / 16.0, 7.0 / 16.0, 13.0 / 16.0,  5.0 / 16.0
-);
+float getBayerThreshold(int x, int y) {
+    int index = y * 4 + x;
+    if (index ==  0) return  0.0 / 16.0;
+    if (index ==  1) return  8.0 / 16.0;
+    if (index ==  2) return  2.0 / 16.0;
+    if (index ==  3) return 10.0 / 16.0;
+    if (index ==  4) return 12.0 / 16.0;
+    if (index ==  5) return  4.0 / 16.0;
+    if (index ==  6) return 14.0 / 16.0;
+    if (index ==  7) return  6.0 / 16.0;
+    if (index ==  8) return  3.0 / 16.0;
+    if (index ==  9) return 11.0 / 16.0;
+    if (index == 10) return  1.0 / 16.0;
+    if (index == 11) return  9.0 / 16.0;
+    if (index == 12) return 15.0 / 16.0;
+    if (index == 13) return  7.0 / 16.0;
+    if (index == 14) return 13.0 / 16.0;
+    return 5.0 / 16.0;
+}
 
 void main() {
-    vec2 uv = gl_FragCoord.xy / u_resolution;
-    vec4 texColor = texture2D(u_texture, uv);
+    vec2 fragCoord = gl_FragCoord.xy;
+    int x = int(mod(fragCoord.x, 4.0));
+    int y = int(mod(fragCoord.y, 4.0));
     
-    // Assuming grayscale (R = G = B)
-    float gray = texColor.r;
-
-    // Calculate index into 4x4 Bayer matrix
-    int x = int(mod(gl_FragCoord.x, 4.0));
-    int y = int(mod(gl_FragCoord.y, 4.0));
-    int index = y * 4 + x;
-
-    float threshold = bayer4x4[index];
+    float threshold = getBayerThreshold(x, y);
+    float gray = texture2D(u_texture, v_uv).r;
 
     float dithered = gray < threshold ? 0.0 : 1.0;
 
@@ -198,6 +207,10 @@ export default function Test() {
       vertexShaderSource,
       plasmafragmentShaderSource
     );
+    const ditherProgram = createProgram(
+      vertexShaderSource,
+      ditherFragmentShaderSource
+    );
     const paletteProgram = createProgram(
       vertexShaderSource,
       betterPaletteShaderSource
@@ -218,13 +231,20 @@ export default function Test() {
       u_zoom: gl.getUniformLocation(plasmaProgram, 'u_zoom')
     };
 
+    const ditherLoc = {
+      a_position: gl.getAttribLocation(ditherProgram, 'a_position'),
+      u_resolution: gl.getUniformLocation(ditherProgram, 'u_resolution'),
+      u_texture: gl.getUniformLocation(ditherProgram, 'u_texture')
+    };
+
     const paletteLocs = {
       a_position: gl.getAttribLocation(paletteProgram, 'a_position'),
       u_texture: gl.getUniformLocation(paletteProgram, 'u_texture'),
       u_palette: gl.getUniformLocation(paletteProgram, 'u_palette')
     };
 
-    const plasmaTarget = createRenderTarget(canvas.width, canvas.height);
+    const renderTarget = createRenderTarget(canvas.width, canvas.height);
+    const r2 = createRenderTarget(canvas.width, canvas.height);
 
     const render = (time: number) => {
       time *= 0.001;
@@ -232,7 +252,7 @@ export default function Test() {
       gl.viewport(0, 0, canvas.width, canvas.height);
 
       // Pass 1: Plasma → offscreen
-      gl.bindFramebuffer(gl.FRAMEBUFFER, plasmaTarget.framebuffer);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, renderTarget.framebuffer);
       gl.useProgram(plasmaProgram);
       gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
       gl.enableVertexAttribArray(plasmaLocs.a_position);
@@ -242,6 +262,18 @@ export default function Test() {
       gl.uniform1f(plasmaLocs.u_zoom, zoom.current);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
 
+      //dither
+      gl.bindFramebuffer(gl.FRAMEBUFFER, r2.framebuffer);
+      gl.useProgram(ditherProgram);
+      gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+      gl.enableVertexAttribArray(ditherLoc.a_position);
+      gl.vertexAttribPointer(ditherLoc.a_position, 2, gl.FLOAT, false, 0, 0);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, renderTarget.texture);
+      gl.uniform1i(ditherLoc.u_texture, 0);
+      gl.uniform2f(ditherLoc.u_resolution, canvas.width, canvas.height);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+
       // Pass 2: Palette → screen
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
       gl.useProgram(paletteProgram);
@@ -249,7 +281,7 @@ export default function Test() {
       gl.enableVertexAttribArray(paletteLocs.a_position);
       gl.vertexAttribPointer(paletteLocs.a_position, 2, gl.FLOAT, false, 0, 0);
       gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, plasmaTarget.texture);
+      gl.bindTexture(gl.TEXTURE_2D, r2.texture);
       gl.uniform1i(paletteLocs.u_texture, 0);
       gl.uniform3fv(paletteLocs.u_palette, new Float32Array(palette.current));
       gl.drawArrays(gl.TRIANGLES, 0, 6);

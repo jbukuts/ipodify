@@ -3,7 +3,10 @@
     "baseUrl": ".",
     "paths": {
       "#/*": ["./src/*"]
-    }
+    },
+    "types": [
+      "vite-plugin-glsl/ext"
+    ]
   },
   "files": [],
   "references": [
