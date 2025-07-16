@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { sdk } from './lib/sdk';
-import Main from './components/main';
+import Main from './components/main-window';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/query';
 import { Toaster as Sonner } from 'sonner';
