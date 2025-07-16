@@ -1,4 +1,9 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient
+} from '@tanstack/react-query';
 import Screen from '../shared/screen';
 import { sdk } from '#/lib/sdk';
 import { memo, useState } from 'react';
@@ -92,7 +97,7 @@ function ArtistTracks(props: ArtistTabProps) {
   });
 
   const handlePlaySong = (idx: number) => {
-    if (data.length > 0) return;
+    if (data.length === 0) return;
     playSong({ uris: data.map((t) => t.uri), offset: idx });
   };
 
@@ -112,6 +117,68 @@ function ArtistTracks(props: ArtistTabProps) {
   );
 }
 
+function useToggleArtistFollowed(id: string) {
+  const client = useQueryClient();
+  const { data: isFollowed, refetch } = useQuery({
+    queryKey: [QUERY_KEYS.artist.IS_SAVED, id],
+    initialData: [false],
+    queryFn: () => sdk.currentUser.followsArtistsOrUsers([id], 'artist'),
+    select: (d) => d[0]
+  });
+
+  const { mutate: toggledFollowed } = useMutation({
+    mutationFn: async () => {
+      const fn = isFollowed ? 'unfollowArtistsOrUsers' : 'followArtistsOrUsers';
+      client.setQueryData(
+        [QUERY_KEYS.artist.IS_SAVED, id],
+        (old: [boolean]) => [!old[0]]
+      );
+      await sdk.currentUser[fn]([id], 'artist');
+      return { isFollowed };
+    },
+    onError: (_err, _, ctx: { isFollowed: boolean } | undefined) => {
+      client.setQueryData(
+        [QUERY_KEYS.artist.IS_SAVED, id],
+        [!!ctx?.isFollowed]
+      );
+    },
+    onSuccess: () => {
+      setTimeout(refetch, 500);
+      client.invalidateQueries({ queryKey: [QUERY_KEYS.artist.SAVED_LIST] });
+    }
+  });
+
+  return { isFollowed, toggledFollowed };
+}
+
+function ArtistInfo(props: ArtistTabProps) {
+  const { id } = props;
+
+  const { isFollowed, toggledFollowed } = useToggleArtistFollowed(id);
+  const { data, isLoading } = useQuery({
+    queryKey: [QUERY_KEYS.artist.ABOUT, id],
+    queryFn: () => sdk.artists.get(id)
+  });
+
+  return (
+    <Screen loading={isLoading} asChild>
+      <TabsContent
+        value={Tab.ABOUT}
+        className='grid auto-rows-auto grid-cols-[auto_1fr] grid-rows-[auto_1fr] gap-2'>
+        <img
+          className='row-span-full size-30 border-[0.125rem] border-fg object-cover object-center'
+          src={data?.images[0].url}
+        />
+        <button onClick={() => toggledFollowed()}>{String(isFollowed)}</button>
+        <p className='text-xl'>{data?.name}</p>
+        <p className='col-start-2 row-start-2'>
+          {data?.followers.total} followers
+        </p>
+      </TabsContent>
+    </Screen>
+  );
+}
+
 function InternalArtist(props: { id: string }) {
   const { id } = props;
 
@@ -124,7 +191,7 @@ function InternalArtist(props: { id: string }) {
           <TabsTrigger value={Tab.ABOUT}>About</TabsTrigger>
         </TabsList>
 
-        <TabsContent value='meta'></TabsContent>
+        <ArtistInfo id={id} />
         <ArtistTracks id={id} />
         <ArtistAlbums id={id} />
       </Tabs>

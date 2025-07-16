@@ -14,7 +14,9 @@ enum ArtistKey {
   TRACKS = 'artist_tracks',
   ALBUMS = 'artist_albums',
   SAVED_LIST = 'artist_saved',
-  RELATED = 'artist_related'
+  IS_SAVED = 'artist_is_saved',
+  RELATED = 'artist_related',
+  ABOUT = 'artist_about'
 }
 
 enum PlaylistKey {

@@ -25,9 +25,8 @@ export function useTogglePlayback() {
       await cancelQuery();
       setIsPlaying(!previousState);
 
-      if (isPlaying) await sdk.player.pausePlayback('');
-      else await sdk.player.startResumePlayback('');
-
+      const fn = isPlaying ? 'pausePlayback' : 'startResumePlayback';
+      await sdk.player[fn]('');
       return previousState;
     },
     onError: (err, _, context: boolean | undefined) => {

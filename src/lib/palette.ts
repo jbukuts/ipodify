@@ -4,6 +4,7 @@ const canvas = document.createElement('canvas');
 
 function getPixels(imgURL: string) {
   const img = new Image();
+  img.crossOrigin = 'anonymous';
 
   return new Promise<ImageData>((resolve, reject) => {
     img.onload = () => {
@@ -24,7 +25,6 @@ function getPixels(imgURL: string) {
     };
 
     img.src = imgURL;
-    img.crossOrigin = 'Anonymous';
   });
 }
 
