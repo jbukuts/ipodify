@@ -16,9 +16,18 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
-    sdk.authenticate().then((r) => {
-      setAuthed(r.authenticated);
-    });
+    sdk
+      .authenticate()
+      .then((r) => {
+        setAuthed(r.authenticated);
+      })
+      .catch(() => {
+        window.history.replaceState(
+          null,
+          '',
+          window.location.origin + window.location.pathname
+        );
+      });
   }, []);
 
   return (
