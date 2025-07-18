@@ -17,7 +17,9 @@ type PlaySongOpts = { deviceId?: string; track?: Track } & (
 
 export default function usePlaySong() {
   const client = useQueryClient();
-  const refetch = usePlaybackStateStore(useShallow((s) => s.refetch));
+  const { refetch, setTrack } = usePlaybackStateStore(
+    useShallow(({ refetch, setTrack }) => ({ refetch, setTrack }))
+  );
 
   // const { mutate } = useMutation({
   //   mutationFn: async (opts: PlaySongOpts) => {
@@ -42,7 +44,9 @@ export default function usePlaySong() {
   // });
 
   return (opts: PlaySongOpts) => {
-    const { deviceId = '', uris, contextUri, offset } = opts;
+    const { deviceId = '', track, uris, contextUri, offset } = opts;
+
+    if (track) setTrack(track);
 
     return sdk.player
       .startResumePlayback(deviceId, contextUri, uris, {

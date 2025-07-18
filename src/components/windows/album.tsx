@@ -71,9 +71,15 @@ function InternalAlbum(props: { id: string }) {
 
   const handlePlaySong = (track: SimplifiedTrack) => {
     const { linked_from, uri } = track;
-
     if (!albumData) return;
+
     playSong({
+      track: {
+        ...track,
+        album: { ...albumData, album_group: '' },
+        external_ids: { upc: '', ean: '', isrc: '' },
+        popularity: 0
+      },
       contextUri: albumData.uri,
       offset: linked_from ? linked_from.uri : uri
     });

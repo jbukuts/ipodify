@@ -60,6 +60,7 @@ export default function Playlist(props: { id: string }) {
   const handleClick = (track: Track) => {
     if (!playlist || tracks.length === 0) return;
     playSong({
+      track,
       contextUri: playlist.uri,
       offset: track.linked_from ? track.linked_from.uri : track.uri
     });

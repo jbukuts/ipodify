@@ -51,6 +51,7 @@ export default function RecentlyPlayed() {
     const offset = range.findIndex((s) => track.uri === s);
 
     playSong({
+      track,
       uris: range,
       offset
     });

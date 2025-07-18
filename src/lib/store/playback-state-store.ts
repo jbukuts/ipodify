@@ -18,6 +18,7 @@ interface NowPlayingState {
 
 interface NowPlayingStore extends NowPlayingState {
   setIsPlaying: (v: boolean) => void;
+  setTrack: (t: TrackItem) => void;
   refetch: () => Promise<void>;
   startPolling: () => void;
   stopPolling: () => void;
@@ -68,6 +69,9 @@ const usePlaybackStateStore = create<NowPlayingStore>((set) => {
     volume: 0,
     setIsPlaying: (v: boolean) => {
       set({ isPlaying: v });
+    },
+    setTrack: (t: TrackItem) => {
+      set({ item: t });
     },
     refetch: async () => {
       await queryClient.cancelQueries({
