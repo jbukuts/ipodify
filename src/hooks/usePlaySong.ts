@@ -21,32 +21,10 @@ export default function usePlaySong() {
     useShallow(({ refetch, setTrack }) => ({ refetch, setTrack }))
   );
 
-  // const { mutate } = useMutation({
-  //   mutationFn: async (opts: PlaySongOpts) => {
-  //     const { deviceId = '', uris, contextUri, offset } = opts;
-
-  //     return sdk.player.startResumePlayback(deviceId, contextUri, uris, {
-  //       [typeof offset === 'number' ? 'position' : 'uri']: offset
-  //     });
-  //   },
-  //   onSuccess: () => {
-  //     setTimeout(refetch, 250);
-  //   },
-  //   onError: (e) => {
-  //     console.error(e);
-  //     let msg = 'There was an issue playing the track';
-
-  //     if (e.message.includes('NO_ACTIVE_DEVICE'))
-  //       msg = 'No active device. Could not play.';
-
-  //     toast.error(msg);
-  //   }
-  // });
-
-  return (opts: PlaySongOpts) => {
+  return async (opts: PlaySongOpts) => {
     const { deviceId = '', track, uris, contextUri, offset } = opts;
 
-    if (track) setTrack(track);
+    if (track) await setTrack(track);
 
     return sdk.player
       .startResumePlayback(deviceId, contextUri, uris, {

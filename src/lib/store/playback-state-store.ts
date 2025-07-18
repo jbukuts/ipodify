@@ -34,12 +34,15 @@ const usePlaybackStateStore = create<NowPlayingStore>((set) => {
 
   const fetchData = async () => {
     logger.debug('Fetching playback state');
-    const d = await queryClient.fetchQuery({
-      queryKey: [PLAYBACK_STATE_QUERY_KEY],
-      queryFn: () => sdk.player.getPlaybackState().catch(() => undefined)
-    });
+    const d = await queryClient
+      .fetchQuery({
+        queryKey: [PLAYBACK_STATE_QUERY_KEY],
+        queryFn: () => sdk.player.getPlaybackState().catch(() => undefined)
+      })
+      .catch(() => null);
 
-    if (!d) {
+    if (d === null) return;
+    else if (d === undefined) {
       return set({
         isPlaying: false,
         device: null,
@@ -60,6 +63,12 @@ const usePlaybackStateStore = create<NowPlayingStore>((set) => {
     });
   };
 
+  const cancelQuery = async () => {
+    await queryClient.cancelQueries({
+      queryKey: [PLAYBACK_STATE_QUERY_KEY]
+    });
+  };
+
   return {
     isPlaying: false,
     device: null,
@@ -70,13 +79,12 @@ const usePlaybackStateStore = create<NowPlayingStore>((set) => {
     setIsPlaying: (v: boolean) => {
       set({ isPlaying: v });
     },
-    setTrack: (t: TrackItem) => {
+    setTrack: async (t: TrackItem) => {
+      await cancelQuery();
       set({ item: t });
     },
     refetch: async () => {
-      await queryClient.cancelQueries({
-        queryKey: [PLAYBACK_STATE_QUERY_KEY]
-      });
+      await cancelQuery();
       fetchData();
     },
     startPolling: () => {
@@ -89,11 +97,7 @@ const usePlaybackStateStore = create<NowPlayingStore>((set) => {
       clearInterval(intervalId);
       intervalId = null;
     },
-    cancelQuery: async () => {
-      await queryClient.cancelQueries({
-        queryKey: [PLAYBACK_STATE_QUERY_KEY]
-      });
-    }
+    cancelQuery
   };
 });
 
