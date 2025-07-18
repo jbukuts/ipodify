@@ -1,4 +1,4 @@
-import{c as y,r as d,j as l,M as x,Q as k,s as g}from"./index-CySbD327.js";import{u as b}from"./useQuery-Dje5bcSO.js";import{u as h}from"./useInfiniteQuery-BE-xP9rD.js";import{T}from"./track-item-aARjZE80.js";import{u as P}from"./usePlaySong-Bpjqvtd5.js";import{B as S}from"./better-virtual-screen-f9lnHKoQ.js";import"./useBaseQuery-Ddbx6UGk.js";import"./context-menu-BK3YOQla.js";import"./smart-marquee-C3eaP0iG.js";import"./use-saved-playlists-67DWZZG_.js";/**
+import{c as y,r as d,j as l,M as x,Q as k,s as g}from"./index-DfmrmTT9.js";import{u as b}from"./useQuery-1o4y0wqU.js";import{u as h}from"./useInfiniteQuery-wJwjH8W7.js";import{T}from"./track-item-CvIn1-0G.js";import{u as P}from"./usePlaySong-DKijAgGE.js";import{B as S}from"./better-virtual-screen-C1iUMR0h.js";import"./useBaseQuery-CXTYewLL.js";import"./context-menu-C347xTa-.js";import"./smart-marquee-BW2jCLlT.js";import"./use-saved-playlists-BaOH4UGJ.js";/**
  * @license lucide-react v0.515.0 - ISC
  *
  * This source code is licensed under the ISC license.
