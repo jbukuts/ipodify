@@ -5,7 +5,7 @@ import AlbumItem from '../shared/album-item';
 import { QUERY_KEYS } from '#/lib/query-enum';
 import { memo } from 'react';
 
-function InternalSavedAlbums() {
+function useSavedAlbums() {
   const {
     data = [],
     fetchNextPage,
@@ -21,14 +21,25 @@ function InternalSavedAlbums() {
     select: (d) => d.pages.flatMap((d) => d.items)
   });
 
+  return { albums: data, fetchNextPage, isLoading, hasNextPage };
+}
+
+function InternalSavedAlbums() {
+  const {
+    albums = [],
+    fetchNextPage,
+    isLoading,
+    hasNextPage
+  } = useSavedAlbums();
+
   return (
     <BetterVirtualScreen
-      loaded={data.length}
+      loaded={albums.length}
       fetchNextPage={fetchNextPage}
       hasNextPage={hasNextPage}
       loading={isLoading}>
       {({ index, style }) => {
-        const { album } = data[index];
+        const { album } = albums[index];
         return <AlbumItem album={album} style={style} />;
       }}
     </BetterVirtualScreen>

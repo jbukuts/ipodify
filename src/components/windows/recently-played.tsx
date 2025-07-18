@@ -15,7 +15,7 @@ interface UseRecentlyPlayedOpts {
 function useRecentlyPlayed(opts?: UseRecentlyPlayedOpts) {
   const { timestamp = Date.now(), duplicates = false } = opts ?? {};
 
-  const { data, ...rest } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: [QUERY_KEYS.player.RECENTLY_PLAYED],
     queryFn: () =>
       sdk.player.getRecentlyPlayedTracks(50, {
@@ -37,7 +37,7 @@ function useRecentlyPlayed(opts?: UseRecentlyPlayedOpts) {
     return res;
   }, [data, duplicates]);
 
-  return { tracks, ...rest };
+  return { tracks, isLoading };
 }
 
 export default function RecentlyPlayed() {

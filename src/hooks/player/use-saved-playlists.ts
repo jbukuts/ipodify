@@ -18,7 +18,7 @@ export default function useSavedPlaylists(opts: UsePlaylistsOpts) {
     enabled: ownerOnly
   });
 
-  const { data: playlists, ...rest } = useInfiniteQuery({
+  const { data: playlists, isLoading } = useInfiniteQuery({
     queryKey: [QUERY_KEYS.playlist.SAVED_LIST],
     queryFn: async ({ pageParam }) => {
       return sdk.currentUser.playlists.playlists(50, pageParam);
@@ -41,6 +41,6 @@ export default function useSavedPlaylists(opts: UsePlaylistsOpts) {
 
   return {
     playlists: flatPlaylists,
-    ...rest
+    isLoading
   };
 }

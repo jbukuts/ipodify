@@ -1,22 +1,22 @@
 import { QUERY_KEYS } from '#/lib/query-enum';
 import { sdk } from '#/lib/sdk';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
 
 export default function useSavedTracks() {
-  const { data, ...rest } = useInfiniteQuery({
+  const {
+    data = [],
+    hasNextPage,
+    isLoading,
+    fetchNextPage
+  } = useInfiniteQuery({
     queryKey: [QUERY_KEYS.track.SAVED_LIST],
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>
       sdk.currentUser.tracks.savedTracks(50, pageParam),
     getNextPageParam: (lastPage) =>
-      lastPage.next ? lastPage.offset + 50 : undefined
+      lastPage.next ? lastPage.offset + 50 : undefined,
+    select: ({ pages }) => pages.flatMap((p) => p.items)
   });
 
-  const flatTracks = useMemo(
-    () => (data ? data.pages.flatMap((d) => d.items) : []),
-    [data]
-  );
-
-  return { tracks: flatTracks, ...rest };
+  return { tracks: data, hasNextPage, isLoading, fetchNextPage };
 }

@@ -31,15 +31,18 @@ function InternalSavedTracks() {
       loading={isLoading}
       loaded={tracks.length}
       fetchNextPage={fetchNextPage}>
-      {({ index, style }) => (
-        <TrackItem
-          isLiked={true}
-          onClick={() => handlePlaySong(tracks[index].track, index)}
-          track={tracks[index].track}
-          trackNumber={index + 1}
-          style={style}
-        />
-      )}
+      {({ index, style }) => {
+        const { track } = tracks[index];
+        return (
+          <TrackItem
+            isLiked={true}
+            onClick={() => handlePlaySong(track, index)}
+            track={track}
+            trackNumber={index + 1}
+            style={style}
+          />
+        );
+      }}
     </BetterVirtualScreen>
   );
 }
