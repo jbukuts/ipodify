@@ -98,7 +98,7 @@ function ArtistTracks(props: ArtistTabProps) {
 
   const handlePlaySong = (idx: number) => {
     if (data.length === 0) return;
-    playSong({ uris: data.map((t) => t.uri), offset: idx });
+    playSong({ track: data[idx], uris: data.map((t) => t.uri), offset: idx });
   };
 
   return (

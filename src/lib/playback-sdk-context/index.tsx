@@ -1,11 +1,19 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import {
+  useEffect,
+  useState,
+  type EffectCallback,
+  type ReactNode
+} from 'react';
 import { sdk } from '../sdk';
 import usePlaybackStateStore from '../store/playback-state-store';
 import { useShallow } from 'zustand/react/shallow';
 import { toast } from 'sonner';
 import { PlaybackContext, type PlaybackSDKContext } from './context';
 
-function useSDKReady() {
+const ALLOW_WEB_PLAYER = false;
+const TRANSFER_ON_CONNECT = false;
+
+function useOnSDKReady(fn?: EffectCallback) {
   const [script, setScript] = useState(false);
 
   useEffect(() => {
@@ -23,16 +31,17 @@ function useSDKReady() {
     window.onSpotifyWebPlaybackSDKReady = () => {
       setScript(true);
     };
-  }, []);
+  }, [script]);
 
-  return script;
+  useEffect(() => {
+    if (!script || !fn) return;
+    return fn();
+  }, [script]);
 }
 
 export function PlaybackSDKProvider(props: { children: ReactNode }) {
   const { children } = props;
 
-  const script = useSDKReady();
-  const [allow] = useState(false);
   const [player, setPlayer] = useState<Spotify.Player>();
   const [current, setCurrent] = useState<PlaybackSDKContext['current']>();
   const [ready, setReady] = useState(false);
@@ -42,8 +51,8 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
     useShallow(({ device, refetch }) => ({ device, refetch }))
   );
 
-  useEffect(() => {
-    if (!script || !allow) return;
+  useOnSDKReady(() => {
+    if (!ALLOW_WEB_PLAYER) return;
     console.log('create player!');
 
     const p = new Spotify.Player({
@@ -64,7 +73,7 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
       setReady(true);
       setSDKPlayerID(device_id);
 
-      if (!device)
+      if (!device && TRANSFER_ON_CONNECT)
         sdk.player
           .transferPlayback([device_id], false)
           .then(() => {
@@ -114,7 +123,7 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
       p.removeListener('authentication_error', handleError);
       p.removeListener('account_error', handleError);
     };
-  }, [script, allow]);
+  });
 
   return (
     <PlaybackContext.Provider value={{ player, ready, current, sdkPlayerId }}>
