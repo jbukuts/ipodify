@@ -37,12 +37,18 @@ const usePlaybackStateStore = create<NowPlayingStore>((set) => {
     const d = await queryClient
       .fetchQuery({
         queryKey: [PLAYBACK_STATE_QUERY_KEY],
-        queryFn: () => sdk.player.getPlaybackState().catch(() => undefined)
+        queryFn: () =>
+          sdk.player.getPlaybackState().catch((e) => {
+            const err = JSON.stringify(e);
+            logger.error(e);
+            if (err.includes('504') || err.includes('502')) return null;
+            return '' as const;
+          })
       })
       .catch(() => null);
 
     if (d === null) return;
-    else if (d === undefined) {
+    else if (d === '') {
       return set({
         isPlaying: false,
         device: null,

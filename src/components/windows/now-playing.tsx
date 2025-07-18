@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Screen from '../shared/screen';
 import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import useAddWindow from '#/hooks/useAddWindow';
@@ -8,21 +8,7 @@ import { useInterval } from 'usehooks-ts';
 import { useMutation } from '@tanstack/react-query';
 import { sdk } from '#/lib/sdk';
 import { BetterSmartMarquee } from '../shared/smart-marquee';
-
-function formatTime(ms: number) {
-  let seconds = Math.floor(ms / 1000);
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  seconds = seconds % 60;
-
-  return [
-    hours > 0 ? String(hours).padStart(2, '0') : undefined,
-    String(minutes).padStart(2, '0'),
-    String(seconds).padStart(2, '0')
-  ]
-    .filter((s) => !!s)
-    .join(':');
-}
+import { formatTime } from '#/lib/utils';
 
 function InternalNowPlaying() {
   const { item, progress, isPlaying, refetch } = usePlaybackStateStore(
@@ -34,11 +20,12 @@ function InternalNowPlaying() {
     }))
   );
   const goTo = useAddWindow();
-  const [val, setValue] = useState(progress);
+  const [localProgress, setLocalProgress] = useState(progress);
+  const isDragging = useRef(false);
 
   useInterval(
     () => {
-      setValue((o) => {
+      setLocalProgress((o) => {
         const n = o + 1000;
 
         if (item && n >= item.duration_ms) {
@@ -55,7 +42,10 @@ function InternalNowPlaying() {
   useEffect(() => {
     refetch();
   }, []);
-  useEffect(() => setValue(progress), [progress]);
+
+  useEffect(() => {
+    if (!isDragging.current) setLocalProgress(progress);
+  }, [progress]);
 
   const { mutate: seek } = useMutation({
     mutationFn: (pos: number) => {
@@ -65,6 +55,42 @@ function InternalNowPlaying() {
       setTimeout(refetch, 500);
     }
   });
+
+  const searchLyrics = useCallback(() => {
+    if (!item || !('artists' in item)) return;
+    window.open(
+      `https://www.google.com/search?q=${encodeURI(item.name + ' ' + item.artists[0].name + ' lyrics')}`
+    );
+  }, [item]);
+
+  const goToAlbum = useCallback(() => {
+    if (!item || !('album' in item)) return;
+    goTo(item.album.name, 'Album', { id: item.album.id })();
+  }, [item, goTo]);
+
+  const name = useMemo(
+    () => (
+      <span
+        className='hover:cursor-pointer hover:underline'
+        onClick={searchLyrics}>
+        {item?.name}
+      </span>
+    ),
+    [item]
+  );
+
+  const album = useMemo(
+    () =>
+      item &&
+      'album' in item && (
+        <span
+          className='hover:cursor-pointer hover:underline'
+          onClick={goToAlbum}>
+          {item.album.name}
+        </span>
+      ),
+    [item, goToAlbum]
+  );
 
   const artists = useMemo(
     () =>
@@ -85,13 +111,6 @@ function InternalNowPlaying() {
     [item, goTo]
   );
 
-  const searchLyrics = () => {
-    if (!item || !('artists' in item)) return;
-    window.open(
-      `https://www.google.com/search?q=${encodeURI(item.name + ' ' + item.artists[0].name + ' lyrics')}`
-    );
-  };
-
   if (item === null)
     return (
       <Screen className='flex flex-col items-center justify-center text-fg'>
@@ -106,22 +125,14 @@ function InternalNowPlaying() {
           wrapperClassName='w-full'
           className='text-center'
           autoPlay>
-          <span
-            className='hover:cursor-pointer hover:underline'
-            onClick={searchLyrics}>
-            {item.name}
-          </span>
+          {name}
         </BetterSmartMarquee>
         {'album' in item && (
           <BetterSmartMarquee
             autoPlay
             wrapperClassName='w-full'
             className='text-center'>
-            <span
-              className='hover:cursor-pointer hover:underline'
-              onClick={goTo(item.album.name, 'Album', { id: item.album.id })}>
-              {item.album.name}
-            </span>
+            {album}
           </BetterSmartMarquee>
         )}
         {'artists' in item && (
@@ -135,16 +146,18 @@ function InternalNowPlaying() {
       </div>
 
       <Slider
-        onValueChange={(e) => setValue(e[0])}
+        onPointerDown={() => (isDragging.current = true)}
+        onPointerUp={() => (isDragging.current = false)}
+        onValueChange={(e) => setLocalProgress(e[0])}
         onValueCommit={(e) => seek(e[0])}
-        value={[val]}
+        value={[localProgress]}
         max={item?.duration_ms}
         min={0}
         className='w-[95%]'
       />
       <div className='mb-3 flex w-[95%] justify-between'>
-        <p>{formatTime(val)}</p>
-        <p>-{formatTime((item?.duration_ms ?? 0) - val)}</p>
+        <p>{formatTime(localProgress)}</p>
+        <p>-{formatTime((item?.duration_ms ?? 0) - localProgress)}</p>
       </div>
     </Screen>
   );

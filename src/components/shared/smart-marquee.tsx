@@ -1,5 +1,6 @@
 import { cn } from '#/lib/utils';
 import {
+  memo,
   useCallback,
   useLayoutEffect,
   useRef,
@@ -69,7 +70,7 @@ export default function SmartMarquee(props: SmartMarqueeProps) {
   );
 }
 
-export function BetterSmartMarquee(props: SmartMarqueeProps) {
+export function InternalBetterSmartMarquee(props: SmartMarqueeProps) {
   const {
     children,
     className,
@@ -85,13 +86,11 @@ export function BetterSmartMarquee(props: SmartMarqueeProps) {
   const checkOverflow = useCallback(() => {
     if (ref.current) {
       const { scrollWidth, clientWidth } = ref.current;
-      console.log(scrollWidth > clientWidth, scrollWidth, clientWidth);
       setOverflow(scrollWidth > clientWidth);
     }
   }, []);
 
   useLayoutEffect(() => {
-    console.log('checking on layout effect');
     checkOverflow();
   }, [checkOverflow, children]);
 
@@ -122,3 +121,6 @@ export function BetterSmartMarquee(props: SmartMarqueeProps) {
     </div>
   );
 }
+
+const BetterSmartMarquee = memo(InternalBetterSmartMarquee);
+export { BetterSmartMarquee };

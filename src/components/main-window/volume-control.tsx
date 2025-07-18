@@ -17,11 +17,11 @@ export default function VolumeControl() {
     }))
   );
   const [localVolume, setLocalVolume] = useState(volume);
-  const isEditing = useRef(false);
+  const isDragging = useRef(false);
   const oldVolume = useRef(50);
 
   useEffect(() => {
-    if (!isEditing.current) setLocalVolume(volume);
+    if (!isDragging.current) setLocalVolume(volume);
   }, [volume]);
 
   const { mutate } = useMutation({
@@ -62,8 +62,8 @@ export default function VolumeControl() {
       {
         <TooltipContent side='top' className='px-1 py-2.5'>
           <Slider
-            onPointerDown={() => (isEditing.current = true)}
-            onPointerUp={() => (isEditing.current = false)}
+            onPointerDown={() => (isDragging.current = true)}
+            onPointerUp={() => (isDragging.current = false)}
             min={0}
             max={100}
             value={[localVolume]}
