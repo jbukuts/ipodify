@@ -6,8 +6,8 @@ import { useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useWindowSize } from 'usehooks-ts';
 import plasmaFragShaderSource from './shaders/plasma.frag';
-// import ditherFragShaderSource from './shaders/dither.frag';
-// import randomDither from './shaders/random-dither.frag';
+// import ditherSource from './shaders/dither.frag';
+// import ditherSource from './shaders/random-dither.frag';
 import paletteFragShaderSource from './shaders/palette.frag';
 import SimplePipeline from './pipeline';
 import { calcLum, lerp } from './helpers';
@@ -22,21 +22,21 @@ const PIPELINE_CONFIG = {
     }
   },
   // dither: {
-  //   src: randomDither,
+  //   src: ditherSource,
   //   locs: { u_resolution: 'uniform2f', u_texture: 'uniform1i' }
-  // }
+  // },
   palette: {
     src: paletteFragShaderSource,
     locs: { u_texture: 'uniform1i', u_palette: 'uniform3fv' }
   }
 } as const;
 
-const START_PALETTE = [
+const START_PALETTE: [number, number, number][] = [
   [0, 0, 0],
   [0.2, 0.2, 0.2],
   [0.5, 0.5, 0.5],
   [1, 1, 1]
-].flat();
+];
 
 function useAlbumPalette() {
   const { images } = usePlaybackStateStore(
@@ -55,7 +55,7 @@ export default function Blobs() {
   const ref = useRef<HTMLCanvasElement>(null);
   const size = useWindowSize();
   const albumPalette = useAlbumPalette();
-  const palette = useRef(START_PALETTE);
+  const palette = useRef(START_PALETTE.flat());
   const zoom = useRef(0.75);
   const speed = useRef(0.15);
 
@@ -102,10 +102,14 @@ export default function Blobs() {
   }, []);
 
   useEffect(() => {
-    if (albumPalette.length < 4) return;
+    console.log(albumPalette);
+    let p = albumPalette;
+    if (Array.isArray(p) && p.length < 4) return;
+    if (p === null)
+      p = START_PALETTE.map(([r, g, b]) => [r * 255, g * 255, b * 255]);
 
     const start = palette.current;
-    const end = albumPalette
+    const end = p
       .slice(0, 4)
       .toSorted((a, b) => calcLum(...a) - calcLum(...b))
       .map(([r, g, b]) => [r / 255, g / 255, b / 255])

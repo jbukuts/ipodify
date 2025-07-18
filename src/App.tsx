@@ -9,10 +9,10 @@ import useAppSettings from './hooks/useAppSettings';
 function App() {
   const [authed, setAuthed] = useState(false);
   const [{ theme }] = useAppSettings();
-  const r = useRef(document.body);
+  const r = useRef(document.body.parentElement);
 
   useEffect(() => {
-    r.current.parentElement?.setAttribute('data-theme', theme);
+    r.current?.setAttribute('data-theme', theme);
   }, [theme]);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       {authed && <Main />}
       <Sonner
-        {...{ theme: 'dark' }}
+        theme={theme}
         position='top-center'
         richColors
         gap={4}

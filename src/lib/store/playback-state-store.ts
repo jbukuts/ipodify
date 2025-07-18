@@ -41,14 +41,14 @@ const usePlaybackStateStore = create<NowPlayingStore>((set) => {
           sdk.player.getPlaybackState().catch((e) => {
             const err = JSON.stringify(e);
             logger.error(e);
-            if (err.includes('504') || err.includes('502')) return null;
-            return '' as const;
+            if (err.includes('504') || err.includes('502')) return '' as const;
+            return null;
           })
       })
       .catch(() => null);
 
-    if (d === null) return;
-    else if (d === '') {
+    if (d === '') return;
+    else if (d === null) {
       return set({
         isPlaying: false,
         device: null,
