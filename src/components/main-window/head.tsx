@@ -4,9 +4,10 @@ import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import useWindowStore from '#/lib/store/window-store';
 import { useShallow } from 'zustand/react/shallow';
 import IconButton from '../shared/icon-button';
-import { Pause, Play, Volume1 } from 'lucide-react';
+import { Pause, Play } from 'lucide-react';
 import MenuItem from '../shared/menu-item';
 import { cn } from '#/lib/utils';
+import VolumeControl from './volume-control';
 
 export function Head() {
   const { removeWindow, windowTitles } = useWindowStore(
@@ -41,7 +42,7 @@ export function Head() {
         icon={false}>
         {title}
       </MenuItem>
-      <IconButton icon={Volume1} />
+      <VolumeControl />
     </div>
   );
 }

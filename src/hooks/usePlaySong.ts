@@ -1,11 +1,12 @@
 import { QUERY_KEYS } from '#/lib/query-enum';
 import { sdk } from '#/lib/sdk';
 import usePlaybackStateStore from '#/lib/store/playback-state-store';
+import type { Track } from '@spotify/web-api-ts-sdk';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 
-type PlaySongOpts = { deviceId?: string } & (
+type PlaySongOpts = { deviceId?: string; track?: Track } & (
   | {
       contextUri: string;
       uris?: never;

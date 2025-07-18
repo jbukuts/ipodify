@@ -5,14 +5,20 @@ import { Logger } from '../logger';
 import { queryClient } from '../query';
 import { QUERY_KEYS } from '../query-enum';
 
-interface NowPlayingStore {
+type Nullable<T> = T | null;
+
+interface NowPlayingState {
   isPlaying: boolean;
-  device: Device | null;
-  item: TrackItem | null;
-  context: Context | null;
+  device: Nullable<Device>;
+  item: Nullable<TrackItem>;
+  context: Nullable<Context>;
   progress: number;
+  volume: number;
+}
+
+interface NowPlayingStore extends NowPlayingState {
   setIsPlaying: (v: boolean) => void;
-  refetch: () => void;
+  refetch: () => Promise<void>;
   startPolling: () => void;
   stopPolling: () => void;
   cancelQuery: () => Promise<void>;
@@ -37,7 +43,9 @@ const usePlaybackStateStore = create<NowPlayingStore>((set) => {
         isPlaying: false,
         device: null,
         item: null,
-        context: null
+        context: null,
+        progress: 0,
+        volume: 0
       });
     }
     const { item, is_playing, device, context, progress_ms } = d;
@@ -46,7 +54,8 @@ const usePlaybackStateStore = create<NowPlayingStore>((set) => {
       device,
       context,
       item,
-      progress: progress_ms
+      progress: progress_ms,
+      volume: device.volume_percent ?? 0
     });
   };
 
@@ -56,10 +65,14 @@ const usePlaybackStateStore = create<NowPlayingStore>((set) => {
     item: null,
     context: null,
     progress: 0,
+    volume: 0,
     setIsPlaying: (v: boolean) => {
       set({ isPlaying: v });
     },
-    refetch: () => {
+    refetch: async () => {
+      await queryClient.cancelQueries({
+        queryKey: [PLAYBACK_STATE_QUERY_KEY]
+      });
       fetchData();
     },
     startPolling: () => {

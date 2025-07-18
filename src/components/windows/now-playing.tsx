@@ -52,7 +52,9 @@ function InternalNowPlaying() {
     isPlaying ? 1000 : null
   );
 
-  useEffect(() => refetch(), []);
+  useEffect(() => {
+    refetch();
+  }, []);
   useEffect(() => setValue(progress), [progress]);
 
   const { mutate: seek } = useMutation({
@@ -82,10 +84,6 @@ function InternalNowPlaying() {
         : [],
     [item, goTo]
   );
-
-  useEffect(() => {
-    console.log('sdfsfsfsdf');
-  }, [goTo]);
 
   const searchLyrics = () => {
     if (!item || !('artists' in item)) return;
@@ -137,7 +135,6 @@ function InternalNowPlaying() {
       </div>
 
       <Slider
-        onMouseDown={() => console.log('down')}
         onValueChange={(e) => setValue(e[0])}
         onValueCommit={(e) => seek(e[0])}
         value={[val]}

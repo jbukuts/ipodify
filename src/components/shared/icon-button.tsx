@@ -11,7 +11,7 @@ export default function IconButton(
     <button
       {...rest}
       className={cn(
-        'group flex shrink-0 items-center justify-center text-fg transition-opacity hover:cursor-pointer hover:opacity-80 disabled:opacity-50 hover:disabled:cursor-not-allowed',
+        'group flex shrink-0 items-center justify-center text-fg transition-opacity hover:cursor-pointer hover:opacity-80 disabled:pointer-events-none disabled:opacity-50',
         className
       )}>
       <Icon className='size-6 shrink-0 fill-fg' size={20} />
