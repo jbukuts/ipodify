@@ -81,7 +81,7 @@ const usePlaybackStateStore = create<NowPlayingStore>((set) => {
     },
     setTrack: async (t: TrackItem) => {
       await cancelQuery();
-      set({ item: t });
+      set({ item: t, progress: 0 });
     },
     refetch: async () => {
       await cancelQuery();
