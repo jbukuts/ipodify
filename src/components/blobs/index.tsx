@@ -1,7 +1,6 @@
 /// <reference types="vite-plugin-glsl/ext" />
 
 import usePalette from '#/hooks/usePalette';
-import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import { useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useWindowSize } from 'usehooks-ts';
@@ -11,6 +10,7 @@ import plasmaFragShaderSource from './shaders/plasma.frag';
 import paletteFragShaderSource from './shaders/palette.frag';
 import SimplePipeline from './pipeline';
 import { calcLum, lerp } from './helpers';
+import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
 
 const PIPELINE_CONFIG = {
   plasma: {
@@ -39,15 +39,13 @@ const START_PALETTE: [number, number, number][] = [
 ];
 
 function useAlbumPalette() {
-  const { images } = usePlaybackStateStore(
-    useShallow(({ item, isPlaying }) => ({
-      images: item && 'album' in item ? item.album.images : null,
-      isPlaying
-    }))
+  const images = useGlobalPlaybackState(
+    useShallow(({ item }) =>
+      item && 'album' in item ? item.album.images : null
+    )
   );
 
   const palette = usePalette(images ? images[0].url : undefined);
-
   return palette;
 }
 

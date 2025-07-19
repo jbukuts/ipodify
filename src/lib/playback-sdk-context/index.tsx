@@ -5,10 +5,10 @@ import {
   type ReactNode
 } from 'react';
 import { sdk } from '../sdk';
-import usePlaybackStateStore from '../store/playback-state-store';
 import { useShallow } from 'zustand/react/shallow';
 import { toast } from 'sonner';
 import { PlaybackContext, type PlaybackSDKContext } from './context';
+import { useGlobalPlaybackState } from '../playback-state-context/hooks';
 
 const ALLOW_WEB_PLAYER = false;
 const TRANSFER_ON_CONNECT = false;
@@ -47,8 +47,9 @@ export function PlaybackSDKProvider(props: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const [sdkPlayerId, setSDKPlayerID] = useState<string>();
 
-  const { device, refetch } = usePlaybackStateStore(
-    useShallow(({ device, refetch }) => ({ device, refetch }))
+  const refetch = () => null;
+  const { device } = useGlobalPlaybackState(
+    useShallow(({ device }) => ({ device }))
   );
 
   useOnSDKReady(() => {

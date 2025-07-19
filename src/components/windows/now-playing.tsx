@@ -1,6 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Screen from '../shared/screen';
-import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import useAddWindow from '#/hooks/useAddWindow';
 import { Slider } from '../shared/slider';
 import { useShallow } from 'zustand/react/shallow';
@@ -9,14 +8,18 @@ import { useMutation } from '@tanstack/react-query';
 import { sdk } from '#/lib/sdk';
 import { BetterSmartMarquee } from '../shared/smart-marquee';
 import { formatTime } from '#/lib/utils';
+import {
+  useGlobalPlaybackState,
+  useInvalidateGlobalPlaybackState
+} from '#/lib/playback-state-context/hooks';
 
 function InternalNowPlaying() {
-  const { item, progress, isPlaying, refetch } = usePlaybackStateStore(
-    useShallow(({ item, progress, isPlaying, refetch }) => ({
+  const refetch = useInvalidateGlobalPlaybackState();
+  const { item, progress, isPlaying } = useGlobalPlaybackState(
+    useShallow(({ item, progress, isPlaying }) => ({
       progress,
       item,
-      isPlaying,
-      refetch
+      isPlaying
     }))
   );
   const goTo = useAddWindow();

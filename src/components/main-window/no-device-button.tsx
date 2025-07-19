@@ -1,15 +1,13 @@
 import useAddWindow from '#/hooks/useAddWindow';
-import usePlaybackStateStore from '#/lib/store/playback-state-store';
+import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
 import useWindowStore from '#/lib/store/window-store';
 import { useShallow } from 'zustand/react/shallow';
 
 export default function NoDeviceButton() {
   const goTo = useAddWindow();
-  const { device } = usePlaybackStateStore(
-    useShallow(({ device, startPolling, stopPolling }) => ({
-      device,
-      startPolling,
-      stopPolling
+  const { device } = useGlobalPlaybackState(
+    useShallow(({ device }) => ({
+      device
     }))
   );
 

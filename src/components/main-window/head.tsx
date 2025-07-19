@@ -1,6 +1,5 @@
 import { useTogglePlayback } from '#/hooks/useTogglePlayback';
 import useWindowTitle from '#/hooks/useWindowTitle';
-import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import useWindowStore from '#/lib/store/window-store';
 import { useShallow } from 'zustand/react/shallow';
 import IconButton from '../shared/icon-button';
@@ -8,6 +7,7 @@ import { Pause, Play } from 'lucide-react';
 import MenuItem from '../shared/menu-item';
 import { cn } from '#/lib/utils';
 import VolumeControl from './volume-control';
+import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
 
 export function Head() {
   const { removeWindow, windowTitles } = useWindowStore(
@@ -17,11 +17,7 @@ export function Head() {
     }))
   );
 
-  const { device } = usePlaybackStateStore(
-    useShallow(({ device }) => ({
-      device
-    }))
-  );
+  const device = useGlobalPlaybackState(useShallow(({ device }) => device));
   const title = useWindowTitle();
   const { toggle, isPlaying } = useTogglePlayback();
 

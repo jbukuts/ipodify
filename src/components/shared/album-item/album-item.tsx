@@ -1,4 +1,3 @@
-import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import { memo, useState, type ComponentProps } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import MenuItem from '../menu-item';
@@ -7,6 +6,7 @@ import { ChevronRight, Volume } from 'lucide-react';
 import useAddWindow from '#/hooks/useAddWindow';
 import { ContextMenu, ContextMenuTrigger } from '../context-menu';
 import AlbumContextMenu from './album-item-context-menu';
+import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
 
 export type AlbumItemProps = ComponentProps<typeof MenuItem> & {
   album: Album | SimplifiedAlbum;
@@ -17,7 +17,7 @@ const AlbumItem = memo((props: AlbumItemProps) => {
 
   const [open, setOpen] = useState(false);
   const goTo = useAddWindow();
-  const item = usePlaybackStateStore(
+  const item = useGlobalPlaybackState(
     useShallow(({ item }) => (item && 'album' in item ? item.album : undefined))
   );
 

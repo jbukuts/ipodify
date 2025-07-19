@@ -1,18 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { sdk } from './lib/sdk';
 import Main from './components/main-window';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from './lib/query';
 import { Toaster as Sonner } from 'sonner';
 import useAppSettings from './hooks/useAppSettings';
-import usePlaybackStateStore from './lib/store/playback-state-store';
 import { useShallow } from 'zustand/react/shallow';
+import { useGlobalPlaybackState } from './lib/playback-state-context/hooks';
 
 function App() {
   const [authed, setAuthed] = useState(false);
   const [{ theme }] = useAppSettings();
   const r = useRef(document.body.parentElement);
-  const title = usePlaybackStateStore(
+  const title = useGlobalPlaybackState(
     useShallow((s) => {
       const album =
         s.item && 'artists' in s.item ? s.item.artists[0].name : undefined;
@@ -42,11 +40,12 @@ function App() {
   }, []);
 
   useEffect(() => {
+    console.log(title);
     document.title = title;
   }, [title]);
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
       {authed && <Main />}
       <Sonner
         theme={theme}
@@ -63,7 +62,7 @@ function App() {
           }
         }}
       />
-    </QueryClientProvider>
+    </>
   );
 }
 

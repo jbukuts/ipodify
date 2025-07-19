@@ -4,14 +4,14 @@ import Screen from '../shared/screen';
 import { QUERY_KEYS } from '#/lib/query-enum';
 import usePlaySong from '#/hooks/usePlaySong';
 import { useCallback, useMemo } from 'react';
-import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import { useShallow } from 'zustand/react/shallow';
 import type { TrackItem as TrackItemType } from '@spotify/web-api-ts-sdk';
 import TrackItem from '../shared/track-item';
+import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
 
 export default function Queue() {
   const playSong = usePlaySong();
-  const contextUri = usePlaybackStateStore(useShallow((s) => s.context?.uri));
+  const contextUri = useGlobalPlaybackState(useShallow((s) => s.context?.uri));
 
   const { data, isFetching } = useQuery({
     queryKey: [QUERY_KEYS.player.QUEUE],

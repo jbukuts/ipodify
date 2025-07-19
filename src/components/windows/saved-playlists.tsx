@@ -1,14 +1,14 @@
 import Screen from '../shared/screen';
 import MenuItem from '../shared/menu-item';
 import { useShallow } from 'zustand/react/shallow';
-import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import { ChevronRight, Volume } from 'lucide-react';
 import useAddWindow from '#/hooks/useAddWindow';
 import useSavedPlaylists from '#/hooks/player/use-saved-playlists';
+import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
 
 export default function PlayLists() {
   const goTo = useAddWindow();
-  const contextUri = usePlaybackStateStore(useShallow((s) => s.context?.uri));
+  const contextUri = useGlobalPlaybackState(useShallow((s) => s.context?.uri));
   const { playlists } = useSavedPlaylists({ enabled: true });
 
   return (

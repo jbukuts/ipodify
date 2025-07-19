@@ -1,4 +1,5 @@
 import { lazy } from 'react';
+import MainMenu from './main-menu';
 
 const SCREEN_MAP = {
   Test: lazy(() => import('./test')),
@@ -6,7 +7,7 @@ const SCREEN_MAP = {
   Artist: lazy(() => import('./artist')),
   Devices: lazy(() => import('./devices')),
   Library: lazy(() => import('./library')),
-  MainMenu: lazy(() => import('./main-menu')),
+  MainMenu: MainMenu,
   NowPlaying: lazy(() => import('./now-playing')),
   Playlist: lazy(() => import('./playlist')),
   Queue: lazy(() => import('./queue')),

@@ -3,9 +3,9 @@ import { ContextMenu, ContextMenuTrigger } from '../context-menu';
 import MenuItem from '../menu-item';
 import { memo, useState, type ComponentProps } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import useNowPlaying from '#/lib/store/playback-state-store';
 import { Volume1 } from 'lucide-react';
 import TrackContextMenu from './track-context-menu';
+import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
 
 export interface TrackItemProps
   extends Pick<ComponentProps<typeof MenuItem>, 'style' | 'onClick'> {
@@ -32,7 +32,7 @@ function InternalTrackItem(props: TrackItemProps) {
     trackNumber ?? ('track_number' in track ? track.track_number : null);
   const trackNumberContent = prefix ? `${prefix}. ` : null;
 
-  const trackId = useNowPlaying(useShallow((s) => s.item?.id));
+  const trackId = useGlobalPlaybackState(useShallow((s) => s.item?.id));
 
   const handleClick =
     onClick &&

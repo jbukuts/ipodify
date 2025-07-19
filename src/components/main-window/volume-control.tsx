@@ -2,18 +2,21 @@ import { Volume, Volume1, Volume2, VolumeOff } from 'lucide-react';
 import IconButton from '../shared/icon-button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../shared/tooltip';
 import { Slider } from '../shared/simple-slider';
-import usePlaybackStateStore from '#/lib/store/playback-state-store';
 import { useShallow } from 'zustand/react/shallow';
 import { useMutation } from '@tanstack/react-query';
 import { sdk } from '#/lib/sdk';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useGlobalPlaybackState,
+  useInvalidateGlobalPlaybackState
+} from '#/lib/playback-state-context/hooks';
 
 export default function VolumeControl() {
-  const { volume, refetch, hasDevice } = usePlaybackStateStore(
-    useShallow(({ refetch, device, volume }) => ({
+  const refetch = useInvalidateGlobalPlaybackState();
+  const { volume, hasDevice } = useGlobalPlaybackState(
+    useShallow(({ device, volume }) => ({
       volume,
-      hasDevice: !!device,
-      refetch
+      hasDevice: !!device
     }))
   );
   const [localVolume, setLocalVolume] = useState(volume);

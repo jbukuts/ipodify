@@ -1,5 +1,5 @@
 import useAddWindow from '#/hooks/useAddWindow';
-import usePlaybackStateStore from '#/lib/store/playback-state-store';
+import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
 import useWindowStore from '#/lib/store/window-store';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -8,7 +8,7 @@ export default function AlbumArt() {
   const currentWindowType = useWindowStore(
     useShallow((s) => s.windows[s.windows.length - 1][0])
   );
-  const images = usePlaybackStateStore(
+  const images = useGlobalPlaybackState(
     useShallow(({ item }) =>
       item && 'album' in item ? item.album.images : null
     )
