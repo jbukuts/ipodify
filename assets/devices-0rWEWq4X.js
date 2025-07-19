@@ -1,0 +1,6 @@
+import{c as f,l as m,m as h,n as g,i as x,u as y,k as p,j as a,S as b,M as k,s as n}from"./index-C9PgoutN.js";import{Q as r}from"./query-enum-C5aGOuRN.js";/**
+ * @license lucide-react v0.515.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const S=[["path",{d:"M20 6 9 17l-5-5",key:"1gmf2c"}]],j=f("check",S);function P(){const c=m(),{activeDeviceId:i}=h(g(t=>{var e;return{activeDeviceId:(e=t.device)==null?void 0:e.id}})),o=x(),{data:s,isLoading:l}=y({queryKey:[r.device.LIST],queryFn:()=>n.player.getAvailableDevices()}),{mutate:d,isPending:u}=p({mutationFn:t=>i===t?Promise.resolve():n.player.transferPlayback([t],!1),onSettled:()=>{o.invalidateQueries({queryKey:[r.device.LIST]}),setTimeout(c,500)}});return a.jsxs(b,{loading:l,children:[s&&s.devices.length===0&&a.jsxs("div",{className:"flex size-full flex-col items-center justify-center gap-4",children:[a.jsx("p",{className:"text-fg",children:"No active devices found"}),a.jsx("button",{className:"rounded-md border-[0.125rem] border-fg p-1.5 text-sm text-fg transition-colors hover:cursor-pointer hover:bg-fg hover:text-bg",children:"Create new device"})]}),s&&s.devices.length>0&&s.devices.map(t=>{const{id:e,name:v}=t;if(e)return a.jsx(k,{icon:i===e?j:!1,onClick:()=>{u||d(e)},children:v},e)})]})}export{P as default};
