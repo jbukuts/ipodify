@@ -2,7 +2,7 @@ import useAppSettings from '#/hooks/useAppSettings';
 import MenuItem from '../shared/menu-item';
 import Screen from '../shared/screen';
 import useAddWindow from '#/hooks/useAddWindow';
-import json from '../../../package.json';
+import { version, repository } from '../../../package.json';
 
 export default function Settings() {
   const [{ clock, theme }, setSettings] = useAppSettings();
@@ -20,12 +20,12 @@ export default function Settings() {
   };
 
   const goToSource = () => {
-    window.open(json.repository);
+    window.open(repository);
   };
 
   return (
     <Screen>
-      <MenuItem text={json.version} onClick={goToSource}>
+      <MenuItem text={version} onClick={goToSource}>
         Version
       </MenuItem>
       <MenuItem text={clock ? 'true' : 'false'} onClick={toggleClock}>

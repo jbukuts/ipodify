@@ -7,11 +7,14 @@ import { useShallow } from 'zustand/react/shallow';
 import { QUERY_KEYS } from '#/lib/query-enum';
 import {
   useGlobalPlaybackState,
-  useInvalidateGlobalPlaybackState
+  useInvalidateGlobalPlaybackState,
+  useUpdateGlobalPlaybackState
 } from '#/lib/playback-state-context/hooks';
+import type { Device } from '@spotify/web-api-ts-sdk';
 
 export default function Devices() {
   const refetch = useInvalidateGlobalPlaybackState();
+  const update = useUpdateGlobalPlaybackState();
   const { activeDeviceId } = useGlobalPlaybackState(
     useShallow((s) => ({ activeDeviceId: s.device?.id }))
   );
@@ -23,8 +26,11 @@ export default function Devices() {
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (id: string) => {
-      if (activeDeviceId === id) return Promise.resolve();
+    mutationFn: async (device: Device) => {
+      const { id } = device;
+      if (!id) throw new Error('Device has no id');
+      if (activeDeviceId === id) return;
+      await update({ device });
       return sdk.player.transferPlayback([id], false);
     },
     onSettled: () => {
@@ -55,7 +61,7 @@ export default function Devices() {
               icon={activeDeviceId === id ? Check : false}
               onClick={() => {
                 if (isPending) return;
-                mutate(id);
+                mutate(device);
               }}>
               {name}
             </MenuItem>

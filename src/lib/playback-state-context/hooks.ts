@@ -3,9 +3,25 @@ import { FALLBACK_STATE, GLOBAL_PLAYBACK_KEY } from './constants';
 import type { NowPlayingState } from './types';
 import { useSyncExternalStore } from 'react';
 import { queryClient } from '../query';
+import { sdk } from '../sdk';
 
-const observer = new QueryObserver<NowPlayingState>(queryClient, {
-  queryKey: [GLOBAL_PLAYBACK_KEY]
+export const observer = new QueryObserver<NowPlayingState>(queryClient, {
+  queryKey: [GLOBAL_PLAYBACK_KEY],
+  initialData: FALLBACK_STATE,
+  queryFn: () =>
+    sdk.player
+      .getPlaybackState()
+      .then((r) => ({
+        isPlaying: r.is_playing,
+        device: r.device,
+        item: r.item,
+        context: r.context,
+        progress: r.progress_ms ?? 0,
+        volume: r.device.volume_percent ?? 0
+      }))
+      .catch(() => FALLBACK_STATE),
+  refetchInterval: 5000,
+  notifyOnChangeProps: 'all'
 });
 
 const subscriber = (onStoreChange: () => void) => {
