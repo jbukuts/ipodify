@@ -14,7 +14,6 @@ export default function useContextMenu() {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     event.preventDefault(); // Prevent default browser context menu
-    console.log(event.pageX, event.pageY);
     setContextPos([event.pageX, event.pageY]);
     setShowContextMenu(true);
   };

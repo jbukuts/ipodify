@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
 import { sdk } from '#/lib/sdk';
-import { useEffect, useMemo, type ComponentProps } from 'react';
+import { useMemo, type ComponentProps } from 'react';
 import type { Artist, Page } from '@spotify/web-api-ts-sdk';
 import MenuItem from '../shared/menu-item';
 import useAddWindow from '#/hooks/useAddWindow';
@@ -45,10 +45,6 @@ export default function SavedArtists() {
     () => (data ? data.pages.flatMap((d) => d.artists.items) : []),
     [data]
   );
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   return (
     <BetterVirtualScreen

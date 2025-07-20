@@ -109,7 +109,6 @@ export default function Blobs() {
   }, []);
 
   useEffect(() => {
-    console.log(albumPalette);
     let p = albumPalette;
     if (Array.isArray(p) && p.length < 4) return;
     if (p === null)

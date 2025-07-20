@@ -2,7 +2,6 @@ import { Suspense, useEffect } from 'react';
 import useWindowStore from '#/lib/store/window-store';
 import { cn } from '#/lib/utils';
 import { useShallow } from 'zustand/react/shallow';
-import Blobs from '../blobs';
 import SCREEN_MAP from '../windows';
 import { PlaybackSDKProvider } from '#/lib/playback-sdk-context';
 import Screen from '../shared/screen';
@@ -31,7 +30,6 @@ export default function Main() {
 
   return (
     <PlaybackSDKProvider>
-      <Blobs />
       <AlbumArt />
       <NoDeviceButton />
       <Controls />

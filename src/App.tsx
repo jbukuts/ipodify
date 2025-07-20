@@ -5,6 +5,7 @@ import { Toaster as Sonner } from 'sonner';
 import useAppSettings from './hooks/useAppSettings';
 import { useShallow } from 'zustand/react/shallow';
 import { useGlobalPlaybackState } from './lib/playback-state-context/hooks';
+import Blobs from './components/blobs';
 
 function App() {
   const [authed, setAuthed] = useState(false);
@@ -40,12 +41,12 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log(title);
     document.title = title;
   }, [title]);
 
   return (
     <>
+      <Blobs />
       {authed && <Main />}
       <Sonner
         theme={theme}
