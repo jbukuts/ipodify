@@ -48,14 +48,19 @@ export default async function createPalette(imageURL: string, slice?: number) {
   return bins
     .filter((b) => b.length > 0)
     .sort((a, b) => b.length - a.length)
-    .map((bin) => {
-      const [r, g, b] = bin
-        .reduce(([r1, g1, b1], [r2, g2, b2]) => [r1 + r2, g1 + g2, b1 + b2], [
-          0, 0, 0
-        ] as Color)
-        .map((v) => Math.round(v / bin.length));
-
-      return [r, g, b] as Color;
-    })
+    .map(
+      (bin) =>
+        bin
+          .reduce(
+            (acc, [r, g, b]) => {
+              acc[0] += r;
+              acc[1] += g;
+              acc[2] += b;
+              return acc;
+            },
+            [0, 0, 0] as Color
+          )
+          .map((v) => Math.round(v / bin.length)) as Color
+    )
     .slice(0, slice);
 }

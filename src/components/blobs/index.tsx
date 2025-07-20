@@ -8,6 +8,7 @@ import plasmaFragShaderSource from './shaders/plasma.frag';
 // import ditherSource from './shaders/dither.frag';
 // import ditherSource from './shaders/random-dither.frag';
 import paletteFragShaderSource from './shaders/palette.frag';
+import lcdFragShaderSource from './shaders/lcd.frag';
 import SimplePipeline from './pipeline';
 import { calcLum, lerp } from './helpers';
 import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
@@ -28,6 +29,10 @@ const PIPELINE_CONFIG = {
   palette: {
     src: paletteFragShaderSource,
     locs: { u_texture: 'uniform1i', u_palette: 'uniform3fv' }
+  },
+  lcd: {
+    src: lcdFragShaderSource,
+    locs: { u_texture: 'uniform1i', u_resolution: 'uniform2f' }
   }
 } as const;
 
@@ -90,6 +95,10 @@ export default function Blobs() {
         palette: {
           u_texture: 0,
           u_palette: new Float32Array(palette.current)
+        },
+        lcd: {
+          u_texture: 0,
+          u_resolution: [canvas.width, canvas.height]
         }
       });
 

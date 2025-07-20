@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Screen from '../shared/screen';
 import { sdk } from '#/lib/sdk';
 import MenuItem from '../shared/menu-item';
-import { Check } from 'lucide-react';
+import { Check, Loader } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { QUERY_KEYS } from '#/lib/query-enum';
 import {
@@ -20,7 +20,12 @@ export default function Devices() {
   );
 
   const client = useQueryClient();
-  const { data, isLoading } = useQuery({
+  const {
+    data,
+    isLoading,
+    isFetching,
+    refetch: refresh
+  } = useQuery({
     queryKey: [QUERY_KEYS.device.LIST],
     queryFn: () => sdk.player.getAvailableDevices()
   });
@@ -42,10 +47,14 @@ export default function Devices() {
   return (
     <Screen loading={isLoading}>
       {data && data.devices.length === 0 && (
-        <div className='flex size-full flex-col items-center justify-center gap-4'>
+        <div className='flex size-full flex-col items-center justify-center gap-4 select-none'>
           <p className='text-fg'>No active devices found</p>
-          <button className='rounded-md border-[0.125rem] border-fg p-1.5 text-sm text-fg transition-colors hover:cursor-pointer hover:bg-fg hover:text-bg'>
-            Create new device
+          <button
+            disabled={isFetching}
+            className='flex items-center gap-2 rounded-md border-[0.125rem] border-fg p-1.5 text-sm text-fg transition-colors hover:cursor-pointer hover:bg-fg hover:text-bg disabled:pointer-events-none disabled:opacity-50'
+            onClick={() => refresh()}>
+            {isFetching ? 'REFRESHING' : 'REFRESH LIST'}{' '}
+            {isFetching && <Loader className='animate-spin' />}
           </button>
         </div>
       )}

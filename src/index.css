@@ -36,10 +36,10 @@
   }
 
   body {
-    @apply relative flex h-screen w-full items-center justify-center transition-colors;
+    @apply relative flex h-screen w-full items-center justify-center;
   }
 
-  body::before {
+  /* body::before {
     content: '';
     position: absolute;
     pointer-events: none;
@@ -64,10 +64,10 @@
       );
 
     background-size: 7px 7px;
-    opacity: 0.65;
+    opacity: 0.0;
     mix-blend-mode: multiply;
 
-  }
+  } */
 
   .custom-scroll {
     /* width */
