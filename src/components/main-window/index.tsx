@@ -6,7 +6,6 @@ import SCREEN_MAP from '../windows';
 import { PlaybackSDKProvider } from '#/lib/playback-sdk-context';
 import Screen from '../shared/screen';
 import AlbumArt from './album-art';
-import Controls from './controls';
 import { Head } from './head';
 import NoDeviceButton from './no-device-button';
 import { observer } from '#/lib/playback-state-context/hooks';
@@ -23,16 +22,10 @@ export default function Main() {
     observer.updateResult();
   }, []);
 
-  // useEffect(() => {
-  //   startPolling();
-  //   return () => stopPolling();
-  // }, [startPolling, stopPolling]);
-
   return (
     <PlaybackSDKProvider>
       <AlbumArt />
       <NoDeviceButton />
-      <Controls />
       <main className='custom-scroll relative flex h-[18.75rem] w-[25rem] flex-col border-[0.125rem] border-fg bg-bg p-3'>
         <Head />
         <div

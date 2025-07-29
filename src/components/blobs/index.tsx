@@ -1,7 +1,7 @@
 /// <reference types="vite-plugin-glsl/ext" />
 
 import usePalette from '#/hooks/usePalette';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useWindowSize } from 'usehooks-ts';
 import plasmaFragShaderSource from './shaders/plasma.frag';
@@ -12,6 +12,7 @@ import lcdFragShaderSource from './shaders/lcd.frag';
 import SimplePipeline from './pipeline';
 import { calcLum, lerp } from './helpers';
 import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
+import useAppSettings from '#/hooks/useAppSettings';
 
 const PIPELINE_CONFIG = {
   plasma: {
@@ -55,17 +56,19 @@ function useAlbumPalette() {
 }
 
 export default function Blobs() {
-  const ref = useRef<HTMLCanvasElement>(null);
+  const [{ enableAnimation }] = useAppSettings();
   const size = useWindowSize();
   const albumPalette = useAlbumPalette();
-  const palette = useRef(START_PALETTE.flat());
-  const zoom = useRef(0.75);
-  const speed = useRef(0.15);
-
-  const pipeline = useRef<SimplePipeline<typeof PIPELINE_CONFIG>>(null);
+  const [tweening, setTweening] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const paletteRef = useRef(START_PALETTE.flat());
+  const zoomRef = useRef(0.75);
+  const speedRef = useRef(0.15);
+  const pipelineRef = useRef<SimplePipeline<typeof PIPELINE_CONFIG>>(null);
+  const animationRef = useRef<number>(null);
 
   useEffect(() => {
-    const canvas = ref.current;
+    const canvas = canvasRef.current;
     if (!canvas) return;
     const gl = canvas.getContext('webgl2');
     if (!gl) return;
@@ -77,7 +80,7 @@ export default function Blobs() {
       PIPELINE_CONFIG
     );
 
-    pipeline.current = renderPipline;
+    pipelineRef.current = renderPipline;
 
     const render = (time: number) => {
       time *= 0.001;
@@ -85,8 +88,8 @@ export default function Blobs() {
       renderPipline.render({
         plasma: {
           u_time: time,
-          u_speed: speed.current,
-          u_zoom: zoom.current
+          u_speed: speedRef.current,
+          u_zoom: zoomRef.current
         },
         dither: {
           u_resolution: [canvas.width, canvas.height],
@@ -94,7 +97,7 @@ export default function Blobs() {
         },
         palette: {
           u_texture: 0,
-          u_palette: new Float32Array(palette.current)
+          u_palette: new Float32Array(paletteRef.current)
         },
         lcd: {
           u_texture: 0,
@@ -102,19 +105,26 @@ export default function Blobs() {
         }
       });
 
-      requestAnimationFrame(render);
+      if (!enableAnimation && !tweening) return;
+      animationRef.current = requestAnimationFrame(render);
     };
 
-    requestAnimationFrame(render);
-  }, []);
+    animationRef.current = requestAnimationFrame(render);
+
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [enableAnimation, tweening]);
 
   useEffect(() => {
+    setTweening(true);
+
     let p = albumPalette;
     if (Array.isArray(p) && p.length < 4) return;
     if (p === null)
       p = START_PALETTE.map(([r, g, b]) => [r * 255, g * 255, b * 255]);
 
-    const start = palette.current;
+    const start = paletteRef.current;
     const end = p
       .slice(0, 4)
       .toSorted((a, b) => calcLum(...a) - calcLum(...b))
@@ -127,11 +137,12 @@ export default function Blobs() {
       const elapsed = timestamp - startTime;
       const t = Math.min(elapsed / 500, 1);
 
-      palette.current = end.map((v, idx) => lerp(start[idx], v, t));
+      paletteRef.current = end.map((v, idx) => lerp(start[idx], v, t));
 
       if (t < 1) requestAnimationFrame(handleTransition);
       else {
-        palette.current = end;
+        setTweening(false);
+        paletteRef.current = end;
       }
     };
 
@@ -139,13 +150,13 @@ export default function Blobs() {
   }, [albumPalette]);
 
   useEffect(() => {
-    if (!pipeline.current) return;
-    pipeline.current.updateDimensions(size.width, size.height);
+    if (!pipelineRef.current) return;
+    pipelineRef.current.updateDimensions(size.width, size.height);
   }, [size]);
 
   return (
     <canvas
-      ref={ref}
+      ref={canvasRef}
       width={size.width}
       height={size.height}
       className='fixed top-0 left-0 -z-1 h-screen w-screen'

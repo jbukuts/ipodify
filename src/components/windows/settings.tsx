@@ -5,18 +5,21 @@ import useAddWindow from '#/hooks/useAddWindow';
 import { version, repository } from '../../../package.json';
 
 export default function Settings() {
-  const [{ clock, theme }, setSettings] = useAppSettings();
+  const [{ clock, theme, enableAnimation }, updateSettings] = useAppSettings();
 
   const goTo = useAddWindow();
   const toggleClock = () => {
-    setSettings((o) => ({ ...o, clock: !o.clock }));
+    updateSettings((o) => ({ clock: !o.clock }));
   };
 
   const toggleTheme = () => {
-    setSettings((o) => ({
-      ...o,
+    updateSettings((o) => ({
       theme: o.theme === 'dark' ? 'light' : 'dark'
     }));
+  };
+
+  const toggleAnimations = () => {
+    updateSettings((o) => ({ enableAnimation: !o.enableAnimation }));
   };
 
   const goToSource = () => {
@@ -30,6 +33,11 @@ export default function Settings() {
       </MenuItem>
       <MenuItem text={clock ? 'true' : 'false'} onClick={toggleClock}>
         Show Clock
+      </MenuItem>
+      <MenuItem
+        text={enableAnimation ? 'true' : 'false'}
+        onClick={toggleAnimations}>
+        Background Animation
       </MenuItem>
       <MenuItem text={theme} onClick={toggleTheme}>
         Theme
