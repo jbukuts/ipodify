@@ -1,4 +1,4 @@
-import { useTogglePlayback } from '#/hooks/useTogglePlayback';
+import { useTogglePlayback } from '#/hooks/player/use-toggle-playback';
 import { sdk } from '#/lib/sdk';
 import { cn } from '#/lib/utils';
 import { useMutation } from '@tanstack/react-query';

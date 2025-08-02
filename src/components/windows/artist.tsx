@@ -8,7 +8,7 @@ import Screen from '../shared/screen';
 import { sdk } from '#/lib/sdk';
 import { memo, useState } from 'react';
 import TrackItem from '../shared/track-item';
-import usePlaySong from '#/hooks/usePlaySong';
+import usePlaySong from '#/hooks/player/use-play-song';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../shared/tabs';
 import AlbumItem from '../shared/album-item';
 import { cn } from '#/lib/utils';

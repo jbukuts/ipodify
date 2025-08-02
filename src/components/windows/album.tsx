@@ -1,72 +1,16 @@
-import { sdk } from '#/lib/sdk';
-import type { Market, SimplifiedTrack } from '@spotify/web-api-ts-sdk';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { memo, useMemo } from 'react';
+import type { SimplifiedTrack } from '@spotify/web-api-ts-sdk';
+import { memo } from 'react';
 import MenuItem from '../shared/menu-item';
 import { Disc3 } from 'lucide-react';
 import TrackItem from '../shared/track-item';
-import usePlaySong from '#/hooks/usePlaySong';
+import usePlaySong from '#/hooks/player/use-play-song';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
-import { QUERY_KEYS } from '#/lib/query-enum';
-
-const ALBUM_STALE_TIME = Infinity;
-
-/**
- * Get album metadata and tracks for a given album
- */
-function useAlbumTracks(id: string, market: Market = 'US') {
-  const { data: albumData, isLoading } = useQuery({
-    queryKey: [QUERY_KEYS.album.GET, id],
-    queryFn: () => sdk.albums.get(id, market),
-    staleTime: ALBUM_STALE_TIME
-  });
-
-  const {
-    data: restTracks = [],
-    hasNextPage,
-    fetchNextPage
-  } = useInfiniteQuery({
-    queryKey: [QUERY_KEYS.album.TRACKS, id],
-    initialPageParam: 50,
-    queryFn: ({ pageParam }) => sdk.albums.tracks(id, 'US', 50, pageParam),
-    getNextPageParam: (lastPage) =>
-      lastPage.next ? lastPage.offset + 50 : undefined,
-    enabled: albumData !== undefined && albumData.tracks.next !== null,
-    select: (d) => d.pages.flatMap((p) => p.items),
-    staleTime: ALBUM_STALE_TIME
-  });
-
-  const groupTracks = useMemo(() => {
-    const allTracks = [
-      ...(albumData ? albumData.tracks.items : []),
-      ...restTracks
-    ];
-    return allTracks.reduce((acc, curr) => {
-      const { disc_number = 1 } = curr;
-      if (!acc[disc_number - 1]) acc.push([]);
-      acc[disc_number - 1].push(curr);
-      return acc;
-    }, [] as SimplifiedTrack[][]);
-  }, [albumData, restTracks]);
-
-  const flatTracks = groupTracks.flatMap((disc, index, arr) => {
-    if (arr.length === 1) return disc;
-    return [index, ...disc];
-  });
-
-  return {
-    tracks: flatTracks,
-    isLoading,
-    albumData,
-    fetchNextPage,
-    hasNextPage
-  };
-}
+import useAlbumTracks from '#/hooks/player/use-album-tracks';
 
 /**
  * Album screen
  */
-function InternalAlbum(props: { id: string }) {
+export default memo(function Album(props: { id: string }) {
   const { id } = props;
 
   const playSong = usePlaySong();
@@ -122,7 +66,4 @@ function InternalAlbum(props: { id: string }) {
       }}
     </BetterVirtualScreen>
   );
-}
-
-const Album = memo(InternalAlbum);
-export default Album;
+});

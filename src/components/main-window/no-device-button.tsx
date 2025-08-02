@@ -1,4 +1,4 @@
-import useAddWindow from '#/hooks/useAddWindow';
+import useAddWindow from '#/hooks/use-add-window';
 import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
 import useWindowStore from '#/lib/store/window-store';
 import { useShallow } from 'zustand/react/shallow';

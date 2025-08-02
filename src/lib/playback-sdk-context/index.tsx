@@ -17,7 +17,7 @@ function useOnSDKReady(fn?: EffectCallback) {
   const [script, setScript] = useState(false);
 
   useEffect(() => {
-    if (script) return;
+    if (script || ALLOW_WEB_PLAYER === false) return;
     if (
       !window.Spotify &&
       document.getElementById('playback-sdk-script') === null

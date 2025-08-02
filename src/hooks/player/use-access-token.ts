@@ -1,5 +1,5 @@
 import type { AccessToken } from '@spotify/web-api-ts-sdk';
-import useReadLocalStorage from './useReadLocalStorage';
+import useReadLocalStorage from './use-read-local-storage';
 
 const TOKEN_KEY = 'spotify-sdk:AuthorizationCodeWithPKCEStrategy:token';
 

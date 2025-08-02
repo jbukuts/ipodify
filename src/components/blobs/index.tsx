@@ -1,6 +1,6 @@
 /// <reference types="vite-plugin-glsl/ext" />
 
-import usePalette from '#/hooks/usePalette';
+import usePalette from '#/hooks/use-palette';
 import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useWindowSize } from 'usehooks-ts';
@@ -12,7 +12,7 @@ import lcdFragShaderSource from './shaders/lcd.frag';
 import SimplePipeline from './pipeline';
 import { calcLum, lerp } from './helpers';
 import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
-import useAppSettings from '#/hooks/useAppSettings';
+import useAppSettings from '#/hooks/use-app-settings';
 
 const PIPELINE_CONFIG = {
   plasma: {

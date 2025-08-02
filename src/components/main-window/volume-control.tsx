@@ -46,7 +46,7 @@ export default function VolumeControl() {
     return mutate(oldVolume.current);
   };
 
-  const Icon = useMemo(() => {
+  const VolumeIcon = useMemo(() => {
     if (localVolume === 0) return VolumeOff;
     else if (localVolume < 33) return Volume;
     else if (localVolume < 66) return Volume1;
@@ -57,8 +57,9 @@ export default function VolumeControl() {
     <Tooltip>
       <TooltipTrigger asChild>
         <IconButton
+          aria-label='Toggle Mute'
           disabled={!hasDevice}
-          icon={Icon}
+          icon={VolumeIcon}
           onClick={handleMuteToggle}
         />
       </TooltipTrigger>

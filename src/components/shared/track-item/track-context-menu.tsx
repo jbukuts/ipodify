@@ -10,7 +10,7 @@ import {
 } from '../context-menu';
 import type { TrackItemProps } from './track-item';
 import SmartMarquee from '../smart-marquee';
-import useAddWindow from '#/hooks/useAddWindow';
+import useAddWindow from '#/hooks/use-add-window';
 import useAddToQueue from '#/hooks/player/use-add-to-queue';
 import useSavedPlaylists from '#/hooks/player/use-saved-playlists';
 import useAddToPlaylist from '#/hooks/player/use-add-to-playlist';

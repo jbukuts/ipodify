@@ -2,7 +2,7 @@ import Screen from '../shared/screen';
 import MenuItem from '../shared/menu-item';
 import { useShallow } from 'zustand/react/shallow';
 import { ChevronRight, Volume } from 'lucide-react';
-import useAddWindow from '#/hooks/useAddWindow';
+import useAddWindow from '#/hooks/use-add-window';
 import useSavedPlaylists from '#/hooks/player/use-saved-playlists';
 import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
 

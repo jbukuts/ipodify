@@ -2,7 +2,7 @@ import { sdk } from '#/lib/sdk';
 import { useQuery } from '@tanstack/react-query';
 import Screen from '../shared/screen';
 import { QUERY_KEYS } from '#/lib/query-enum';
-import usePlaySong from '#/hooks/usePlaySong';
+import usePlaySong from '#/hooks/player/use-play-song';
 import { useCallback, useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type { TrackItem as TrackItemType } from '@spotify/web-api-ts-sdk';

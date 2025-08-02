@@ -1,5 +1,5 @@
-import { useTogglePlayback } from '#/hooks/useTogglePlayback';
-import useWindowTitle from '#/hooks/useWindowTitle';
+import { useTogglePlayback } from '#/hooks/player/use-toggle-playback';
+import useWindowTitle from '#/hooks/use-window-title';
 import useWindowStore from '#/lib/store/window-store';
 import { useShallow } from 'zustand/react/shallow';
 import IconButton from '../shared/icon-button';
@@ -26,6 +26,7 @@ export function Head() {
   return (
     <div className='flex w-full justify-between gap-1 border-b-[0.125rem] border-fg pb-1'>
       <IconButton
+        aria-label={isPlaying ? 'Pause' : 'Play'}
         disabled={device === null}
         icon={!isPlaying ? Play : Pause}
         onClick={() => toggle()}></IconButton>

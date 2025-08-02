@@ -1,11 +1,11 @@
 import type { Track } from '@spotify/web-api-ts-sdk';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
 import TrackItem from '../shared/track-item';
-import usePlaySong from '#/hooks/usePlaySong';
+import usePlaySong from '#/hooks/player/use-play-song';
 import { memo, useCallback } from 'react';
 import useSavedTracks from '#/hooks/player/use-saved-tracks';
 
-function InternalSavedTracks() {
+export default memo(function SavedTracks() {
   const playSong = usePlaySong();
 
   const { tracks, hasNextPage, isLoading, fetchNextPage } = useSavedTracks();
@@ -46,7 +46,4 @@ function InternalSavedTracks() {
       }}
     </BetterVirtualScreen>
   );
-}
-
-const SavedTracks = memo(InternalSavedTracks);
-export default SavedTracks;
+});

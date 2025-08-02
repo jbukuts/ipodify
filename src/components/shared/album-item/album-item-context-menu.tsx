@@ -1,5 +1,5 @@
 import useAlbumSavedState from '#/hooks/player/use-album-saved-state';
-import useAddWindow from '#/hooks/useAddWindow';
+import useAddWindow from '#/hooks/use-add-window';
 import {
   ContextMenuContent,
   ContextMenuItem,

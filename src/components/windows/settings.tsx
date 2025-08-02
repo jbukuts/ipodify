@@ -1,7 +1,7 @@
-import useAppSettings from '#/hooks/useAppSettings';
+import useAppSettings from '#/hooks/use-app-settings';
 import MenuItem from '../shared/menu-item';
 import Screen from '../shared/screen';
-import useAddWindow from '#/hooks/useAddWindow';
+import useAddWindow from '#/hooks/use-add-window';
 import { version, repository } from '../../../package.json';
 
 export default function Settings() {

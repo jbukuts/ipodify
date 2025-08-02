@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/react/shallow';
 import MenuItem from '../menu-item';
 import type { Album, SimplifiedAlbum } from '@spotify/web-api-ts-sdk';
 import { ChevronRight, Volume } from 'lucide-react';
-import useAddWindow from '#/hooks/useAddWindow';
+import useAddWindow from '#/hooks/use-add-window';
 import { ContextMenu, ContextMenuTrigger } from '../context-menu';
 import AlbumContextMenu from './album-item-context-menu';
 import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';

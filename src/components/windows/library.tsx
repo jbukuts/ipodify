@@ -1,6 +1,6 @@
 import MenuItem from '../shared/menu-item';
 import Screen from '../shared/screen';
-import useAddWindow from '#/hooks/useAddWindow';
+import useAddWindow from '#/hooks/use-add-window';
 
 export default function Library() {
   const goTo = useAddWindow();

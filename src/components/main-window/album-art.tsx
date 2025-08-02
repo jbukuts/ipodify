@@ -1,4 +1,4 @@
-import useAddWindow from '#/hooks/useAddWindow';
+import useAddWindow from '#/hooks/use-add-window';
 import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
 import useWindowStore from '#/lib/store/window-store';
 import { cn } from '#/lib/utils';
@@ -22,6 +22,7 @@ export default function AlbumArt() {
 
   return (
     <button
+      aria-label='Go to Now Playing'
       className={cn(
         'fixed top-[calc(50%-6rem)] left-[50%] z-0 size-50 translate-[-50%] overflow-hidden rounded-md transition-[scale,top] hover:top-[calc(50%-12rem)] not-disabled:hover:cursor-pointer not-disabled:active:scale-110'
       )}

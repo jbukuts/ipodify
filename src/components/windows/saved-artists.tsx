@@ -4,7 +4,7 @@ import { sdk } from '#/lib/sdk';
 import { useMemo, type ComponentProps } from 'react';
 import type { Artist, Page } from '@spotify/web-api-ts-sdk';
 import MenuItem from '../shared/menu-item';
-import useAddWindow from '#/hooks/useAddWindow';
+import useAddWindow from '#/hooks/use-add-window';
 import { QUERY_KEYS } from '#/lib/query-enum';
 
 interface UpdatedPage<T> extends Page<T> {

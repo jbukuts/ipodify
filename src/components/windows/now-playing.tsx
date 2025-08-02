@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Screen from '../shared/screen';
-import useAddWindow from '#/hooks/useAddWindow';
+import useAddWindow from '#/hooks/use-add-window';
 import { Slider } from '../shared/slider';
 import { useShallow } from 'zustand/react/shallow';
 import { useInterval } from 'usehooks-ts';
@@ -43,6 +43,7 @@ function InternalNowPlaying() {
   );
 
   useEffect(() => {
+    // pull latest data on mount
     refetch();
   }, []);
 

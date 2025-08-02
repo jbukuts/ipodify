@@ -1,4 +1,4 @@
-import useAddWindow from '#/hooks/useAddWindow';
+import useAddWindow from '#/hooks/use-add-window';
 import { useShallow } from 'zustand/react/shallow';
 import MenuItem from '../shared/menu-item';
 import Screen from '../shared/screen';

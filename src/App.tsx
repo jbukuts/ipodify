@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { sdk } from './lib/sdk';
 import Main from './components/main-window';
 import { Toaster as Sonner } from 'sonner';
-import useAppSettings from './hooks/useAppSettings';
+import useAppSettings from './hooks/use-app-settings';
 import { useShallow } from 'zustand/react/shallow';
 import { useGlobalPlaybackState } from './lib/playback-state-context/hooks';
 import Blobs from './components/blobs';
@@ -10,7 +10,7 @@ import Blobs from './components/blobs';
 function App() {
   const [authed, setAuthed] = useState(false);
   const [{ theme }] = useAppSettings();
-  const r = useRef(document.body.parentElement);
+  const htmlElementRef = useRef(document.body.parentElement);
   const title = useGlobalPlaybackState(
     useShallow((s) => {
       const album =
@@ -22,8 +22,14 @@ function App() {
   );
 
   useEffect(() => {
-    r.current?.setAttribute('data-theme', theme);
+    // change page theme when data theme is updated
+    htmlElementRef.current?.setAttribute('data-theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    // handle change page title when song changes
+    document.title = title;
+  }, [title]);
 
   useEffect(() => {
     sdk
@@ -39,10 +45,6 @@ function App() {
         );
       });
   }, []);
-
-  useEffect(() => {
-    document.title = title;
-  }, [title]);
 
   return (
     <>

@@ -3,7 +3,6 @@ import useWindowStore from '#/lib/store/window-store';
 import { cn } from '#/lib/utils';
 import { useShallow } from 'zustand/react/shallow';
 import SCREEN_MAP from '../windows';
-import { PlaybackSDKProvider } from '#/lib/playback-sdk-context';
 import Screen from '../shared/screen';
 import AlbumArt from './album-art';
 import { Head } from './head';
@@ -23,7 +22,7 @@ export default function Main() {
   }, []);
 
   return (
-    <PlaybackSDKProvider>
+    <>
       <AlbumArt />
       <NoDeviceButton />
       <main className='custom-scroll relative flex h-[18.75rem] w-[25rem] flex-col border-[0.125rem] border-fg bg-bg p-3'>
@@ -62,6 +61,6 @@ export default function Main() {
           </div>
         </div>
       </main>
-    </PlaybackSDKProvider>
+    </>
   );
 }
