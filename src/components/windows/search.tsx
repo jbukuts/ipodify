@@ -14,8 +14,13 @@ export default function Search() {
     queryFn: () =>
       sdk.search(deboucedTerm, ['album', 'playlist', 'track', 'artist'], 'US'),
     enabled: !!deboucedTerm && deboucedTerm !== '',
+    gcTime: 0,
     placeholderData: keepPreviousData
   });
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return;
+  };
 
   useEffect(() => {
     console.log(data);
@@ -25,14 +30,12 @@ export default function Search() {
     <Screen>
       <div className='sticky top-0 flex h-8 flex-row gap-1 bg-bg'>
         <input
-          className='h-full grow border-[0.125rem] border-fg px-1'
+          className='h-full grow border-[0.125rem] border-fg px-1 focus-within:outline-0'
           type='text'
           placeholder='...'
+          onKeyDown={(e) => handleKeyDown(e)}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button className='border-[0.125rem] border-fg px-1.5 text-fg transition-colors hover:cursor-pointer hover:bg-fg hover:text-bg'>
-          Search
-        </button>
       </div>
 
       {data?.tracks.items.map((track, idx) => (

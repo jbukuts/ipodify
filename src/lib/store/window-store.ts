@@ -6,13 +6,17 @@ import type SCREEN_MAP from '#/components/windows';
 
 type WindowItem = [MenuType, ComponentProps<any>, string];
 
+type WindowCompProps<T extends MenuType> = ComponentProps<
+  (typeof SCREEN_MAP)[T]
+>;
+
 interface WindowStore {
   windows: WindowItem[];
   windowTitles: string[];
   addWindow: <T extends MenuType>(
     title: string,
     comp: T,
-    props?: ComponentProps<(typeof SCREEN_MAP)[T]>
+    props?: WindowCompProps<T>
   ) => void;
   removeWindow: (n?: number) => void;
 }

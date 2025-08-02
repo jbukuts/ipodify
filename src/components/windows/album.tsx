@@ -9,13 +9,16 @@ import usePlaySong from '#/hooks/usePlaySong';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
 import { QUERY_KEYS } from '#/lib/query-enum';
 
+const ALBUM_STALE_TIME = Infinity;
+
 /**
  * Get album metadata and tracks for a given album
  */
 function useAlbumTracks(id: string, market: Market = 'US') {
   const { data: albumData, isLoading } = useQuery({
     queryKey: [QUERY_KEYS.album.GET, id],
-    queryFn: () => sdk.albums.get(id, market)
+    queryFn: () => sdk.albums.get(id, market),
+    staleTime: ALBUM_STALE_TIME
   });
 
   const {
@@ -29,7 +32,8 @@ function useAlbumTracks(id: string, market: Market = 'US') {
     getNextPageParam: (lastPage) =>
       lastPage.next ? lastPage.offset + 50 : undefined,
     enabled: albumData !== undefined && albumData.tracks.next !== null,
-    select: (d) => d.pages.flatMap((p) => p.items)
+    select: (d) => d.pages.flatMap((p) => p.items),
+    staleTime: ALBUM_STALE_TIME
   });
 
   const groupTracks = useMemo(() => {

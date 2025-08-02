@@ -1,7 +1,8 @@
 import { QUERY_KEYS } from '#/lib/query-enum';
 import { sdk } from '#/lib/sdk';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
+import useUserProfile from './use-user-profile';
 
 interface UsePlaylistsOpts {
   enabled?: boolean;
@@ -11,12 +12,7 @@ interface UsePlaylistsOpts {
 export default function useSavedPlaylists(opts: UsePlaylistsOpts) {
   const { enabled = false, ownerOnly = false } = opts;
 
-  const { data: profile } = useQuery({
-    queryKey: [QUERY_KEYS.user.PROFILE, 'me'],
-    queryFn: () => sdk.currentUser.profile(),
-    staleTime: Infinity,
-    enabled: ownerOnly
-  });
+  const { data: profile } = useUserProfile();
 
   const { data: playlists, isLoading } = useInfiniteQuery({
     queryKey: [QUERY_KEYS.playlist.SAVED_LIST],

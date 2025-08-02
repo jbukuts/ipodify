@@ -6,6 +6,7 @@ import usePlaySong from '#/hooks/usePlaySong';
 import type { Track } from '@spotify/web-api-ts-sdk';
 import MenuItem from '../shared/menu-item';
 import { QUERY_KEYS } from '#/lib/query-enum';
+import useUserProfile from '#/hooks/player/use-user-profile';
 
 function usePlaylistTracks(id: string) {
   const { data: playlist, isLoading } = useQuery({
@@ -27,10 +28,7 @@ function usePlaylistTracks(id: string) {
     enabled: playlist !== undefined && playlist.tracks.next !== null
   });
 
-  const { data: profile } = useQuery({
-    queryKey: [QUERY_KEYS.user.PROFILE],
-    queryFn: () => sdk.currentUser.profile()
-  });
+  const { data: profile } = useUserProfile();
 
   const allTracks = [
     ...(playlist ? playlist.tracks.items : []),
