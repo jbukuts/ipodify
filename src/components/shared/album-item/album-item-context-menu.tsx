@@ -26,7 +26,7 @@ export default function AlbumContextMenu(props: AlbumContextMenuProps) {
     <ContextMenuContent>
       <ContextMenuLabel className='grid w-60 grid-cols-[auto_1fr] grid-rows-[repeat(auto,4)] items-center gap-x-3 [&_*]:text-xs'>
         <img
-          className='col-span-1 row-span-4 size-20 rounded-sm border-[0.0625rem] border-fg'
+          className='col-span-1 row-span-4 size-20 rounded-sm border-1 border-fg'
           src={album.images.length > 0 ? album.images[0].url : ''}
         />
         <SmartMarquee className='row-span-1'>{album.name}</SmartMarquee>

@@ -11,9 +11,9 @@ import TrackItem from '../shared/track-item';
 import usePlaySong from '#/hooks/player/use-play-song';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../shared/tabs';
 import AlbumItem from '../shared/album-item';
-import { cn } from '#/lib/utils';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
 import { QUERY_KEYS } from '#/lib/query-enum';
+import BadgeButton from '../shared/badge-button';
 
 const ALBUM_GROUPS = ['album', 'single', 'appears_on', 'compilation'] as const;
 
@@ -64,15 +64,12 @@ function ArtistAlbums(props: ArtistTabProps) {
                 className='flex h-8 flex-row items-center gap-1'
                 style={style}>
                 {ALBUM_GROUPS.map((g) => (
-                  <button
+                  <BadgeButton
                     onClick={selectGroup(g)}
-                    className={cn(
-                      'h-min rounded-full border-[0.0625rem] border-fg px-1.5 py-0.25 text-xs whitespace-nowrap text-fg capitalize hover:cursor-pointer',
-                      group === g && 'bg-fg text-bg'
-                    )}
+                    isActive={group === g}
                     key={g}>
                     {g.replaceAll('_', ' ')}
-                  </button>
+                  </BadgeButton>
                 ))}
               </div>
             );
@@ -166,7 +163,7 @@ function ArtistInfo(props: ArtistTabProps) {
         value={Tab.ABOUT}
         className='grid auto-rows-auto grid-cols-[auto_1fr] grid-rows-[auto_1fr] gap-2'>
         <img
-          className='row-span-full size-30 border-[0.125rem] border-fg object-cover object-center'
+          className='row-span-full size-30 border-2 border-fg object-cover object-center'
           src={data?.images[0].url}
         />
         <button onClick={() => toggledFollowed()}>{String(isFollowed)}</button>
@@ -179,7 +176,7 @@ function ArtistInfo(props: ArtistTabProps) {
   );
 }
 
-function InternalArtist(props: { id: string }) {
+export default memo(function Artist(props: { id: string }) {
   const { id } = props;
 
   return (
@@ -197,7 +194,4 @@ function InternalArtist(props: { id: string }) {
       </Tabs>
     </Screen>
   );
-}
-
-const Artist = memo(InternalArtist);
-export default Artist;
+});

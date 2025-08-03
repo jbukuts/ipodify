@@ -19,7 +19,7 @@ export default function NoDeviceButton() {
       <button
         data-hidden={show}
         style={{ mixBlendMode: 'difference' }}
-        className='fixed bottom-[calc(50%+10rem)] left-1/2 translate-[-50%] rounded-md border-[0.125rem] border-white px-2.5 py-1 font-mono text-xs font-semibold text-white transition-colors animate-in fade-in hover:cursor-pointer hover:bg-white hover:text-black'
+        className='fixed bottom-[calc(50%+10rem)] left-1/2 translate-[-50%] rounded-md border-2 border-white px-2.5 py-1 font-mono text-xs font-semibold text-white transition-colors animate-in fade-in hover:cursor-pointer hover:bg-white hover:text-black'
         type='button'
         onClick={goTo('Devices', 'Devices')}>
         SELECT DEVICE

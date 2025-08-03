@@ -1,5 +1,5 @@
 
-#define PALETTE_SIZE 4
+#define PALETTE_SIZE 5
 precision mediump float;
 varying vec2 v_uv;
 uniform sampler2D u_texture;

@@ -14,6 +14,8 @@ import { calcLum, lerp } from './helpers';
 import { useGlobalPlaybackState } from '#/lib/playback-state-context/hooks';
 import useAppSettings from '#/hooks/use-app-settings';
 
+const PALETTE_SIZE = 5;
+
 const PIPELINE_CONFIG = {
   plasma: {
     src: plasmaFragShaderSource,
@@ -38,10 +40,11 @@ const PIPELINE_CONFIG = {
 } as const;
 
 const START_PALETTE: [number, number, number][] = [
-  [0, 0, 0],
+  [0.0, 0.0, 0.0],
   [0.2, 0.2, 0.2],
   [0.5, 0.5, 0.5],
-  [1, 1, 1]
+  [0.7, 0.7, 0.7],
+  [1.0, 1.0, 1.0]
 ];
 
 function useAlbumPalette() {
@@ -120,13 +123,14 @@ export default function Blobs() {
     setTweening(true);
 
     let p = albumPalette;
-    if (Array.isArray(p) && p.length < 4) return;
+    console.log(p);
+    if (Array.isArray(p) && p.length < PALETTE_SIZE) return;
     if (p === null)
       p = START_PALETTE.map(([r, g, b]) => [r * 255, g * 255, b * 255]);
 
     const start = paletteRef.current;
     const end = p
-      .slice(0, 4)
+      .slice(0, PALETTE_SIZE)
       .toSorted((a, b) => calcLum(...a) - calcLum(...b))
       .map(([r, g, b]) => [r / 255, g / 255, b / 255])
       .flat();

@@ -44,6 +44,7 @@ export default function Settings() {
       </MenuItem>
       <MenuItem onClick={goTo('Devices', 'Devices')}>Select Device</MenuItem>
       <MenuItem onClick={goTo('Test Menu', 'Test')}>Test Menu</MenuItem>
+      <MenuItem onClick={goTo('User Profile', 'Profile')}>Profile</MenuItem>
     </Screen>
   );
 }

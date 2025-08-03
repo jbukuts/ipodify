@@ -1,59 +1,18 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
 import BetterVirtualScreen from '../shared/better-virtual-screen';
-import { sdk } from '#/lib/sdk';
-import { useMemo, type ComponentProps } from 'react';
-import type { Artist, Page } from '@spotify/web-api-ts-sdk';
-import MenuItem from '../shared/menu-item';
-import useAddWindow from '#/hooks/use-add-window';
-import { QUERY_KEYS } from '#/lib/query-enum';
-
-interface UpdatedPage<T> extends Page<T> {
-  cursors: { after?: string; before?: string };
-}
-
-type T = Promise<{ artists: UpdatedPage<Artist> }>;
-
-function ArtistItem(
-  props: { artist: Artist } & Omit<ComponentProps<typeof MenuItem>, 'onClick'>
-) {
-  const { artist, ...rest } = props;
-  const { name, id } = artist;
-
-  const goTo = useAddWindow();
-
-  return (
-    <MenuItem {...rest} text={undefined} onClick={goTo(name, 'Artist', { id })}>
-      {name}
-    </MenuItem>
-  );
-}
+import ArtistItem from '../shared/artist-item';
+import useSavedArtists from '#/hooks/player/use-saved-artists';
 
 export default function SavedArtists() {
-  const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: [QUERY_KEYS.artist.SAVED_LIST],
-    initialPageParam: '',
-    queryFn: ({ pageParam }) => {
-      return sdk.currentUser.followedArtists(pageParam, 50) as T;
-    },
-    getNextPageParam: (lastPage) =>
-      lastPage.artists.cursors.after
-        ? lastPage.artists.cursors.after
-        : undefined
-  });
-
-  const allRows = useMemo(
-    () => (data ? data.pages.flatMap((d) => d.artists.items) : []),
-    [data]
-  );
+  const { artists, isLoading, fetchNextPage, hasNextPage } = useSavedArtists();
 
   return (
     <BetterVirtualScreen
       hasNextPage={hasNextPage}
       loading={isLoading}
-      loaded={allRows.length}
+      loaded={artists.length}
       fetchNextPage={fetchNextPage}>
       {({ index, style }) => {
-        return <ArtistItem style={style} artist={allRows[index]} />;
+        return <ArtistItem style={style} artist={artists[index]} />;
       }}
     </BetterVirtualScreen>
   );

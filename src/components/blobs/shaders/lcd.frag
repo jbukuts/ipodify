@@ -37,7 +37,7 @@ void main() {
   vec4 mixed = mix(h_c, v_c, 0.85);
 
   vec4 effect_color = mixed.rgba * base_color.rgba;
-  vec4 final_color = mix(base_color, effect_color, 0.2);
+  vec4 final_color = mix(base_color, effect_color, 0.25);
   // final_color.a = 1.0;
   gl_FragColor = final_color;
 }

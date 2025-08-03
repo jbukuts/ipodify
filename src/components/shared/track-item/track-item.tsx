@@ -16,7 +16,7 @@ export interface TrackItemProps
   showGoToAlbum?: boolean;
 }
 
-function InternalTrackItem(props: TrackItemProps) {
+export default memo(function TrackItem(props: TrackItemProps) {
   const {
     track,
     trackNumber,
@@ -65,7 +65,4 @@ function InternalTrackItem(props: TrackItemProps) {
       />
     </ContextMenu>
   );
-}
-
-const TrackItem = memo(InternalTrackItem);
-export default TrackItem;
+});

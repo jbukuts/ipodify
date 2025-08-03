@@ -37,6 +37,7 @@ const InnerElement = forwardRef<HTMLDivElement, ComponentProps<'div'>>(
         ref={ref}
         style={{
           ...style,
+          pointerEvents: 'auto',
           height: `${(typeof style!.height === 'string' ? parseFloat(style!.height!) : style!.height!) + PADDING * fontSize}px`
         }}
         {...rest}
@@ -45,7 +46,9 @@ const InnerElement = forwardRef<HTMLDivElement, ComponentProps<'div'>>(
   }
 );
 
-function InternalBetterVirtualScreen(props: BetterVirtualScreenProps) {
+export default memo(function BetterVirtualScreen(
+  props: BetterVirtualScreenProps
+) {
   const {
     loaded,
     total,
@@ -84,6 +87,7 @@ function InternalBetterVirtualScreen(props: BetterVirtualScreenProps) {
               {({ index, style }: { index: number; style: CSSProperties }) => {
                 const s: CSSProperties = {
                   ...style,
+
                   top: `${(typeof style.top === 'string' ? parseFloat(style.top!) : style.top!) + PADDING * fontSize}px`
                 };
 
@@ -99,7 +103,4 @@ function InternalBetterVirtualScreen(props: BetterVirtualScreenProps) {
       )}
     </AutoSizer>
   );
-}
-
-const BetterVirtualScreen = memo(InternalBetterVirtualScreen);
-export default BetterVirtualScreen;
+});

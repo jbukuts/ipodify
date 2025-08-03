@@ -51,7 +51,7 @@ export default function Devices() {
           <p className='text-fg'>No active devices found</p>
           <button
             disabled={isFetching}
-            className='flex items-center gap-2 rounded-md border-[0.125rem] border-fg p-1.5 text-sm text-fg transition-colors hover:cursor-pointer hover:bg-fg hover:text-bg disabled:pointer-events-none disabled:opacity-50'
+            className='flex items-center gap-2 rounded-md border-2 border-fg p-1.5 text-sm text-fg transition-colors hover:cursor-pointer hover:bg-fg hover:text-bg disabled:pointer-events-none disabled:opacity-50'
             onClick={() => refresh()}>
             {isFetching ? 'REFRESHING' : 'REFRESH LIST'}{' '}
             {isFetching && <Loader className='animate-spin' />}

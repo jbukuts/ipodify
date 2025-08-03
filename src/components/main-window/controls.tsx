@@ -22,7 +22,7 @@ function ControlButton(props: {
   return (
     <button
       className={cn(
-        'group relative rounded-full border-[0.0625rem] border-fg bg-bg/100 p-2 backdrop-blur-xs hover:cursor-pointer',
+        'group relative rounded-full border-1 border-fg bg-bg/100 p-2 backdrop-blur-xs hover:cursor-pointer',
         className
       )}
       onClick={onClick}>

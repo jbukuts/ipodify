@@ -78,7 +78,7 @@ export default function TrackContextMenu(props: TrackItemContextMenuProps) {
         <>
           <ContextMenuLabel className='grid w-60 grid-cols-[auto_1fr] grid-rows-[repeat(auto,4)] items-center gap-x-3 [&_*]:text-xs'>
             <img
-              className='col-span-1 row-span-4 size-20 rounded-sm border-[0.0625rem] border-fg'
+              className='col-span-1 row-span-4 size-20 rounded-sm border-1 border-fg'
               src={
                 track.album.images.length > 0 ? track.album.images[0].url : ''
               }
@@ -132,6 +132,7 @@ export default function TrackContextMenu(props: TrackItemContextMenuProps) {
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map((a) => (
                   <ContextMenuItem
+                    key={a.uri}
                     onClick={goTo(a.name, 'Artist', { id: a.id })}>
                     {a.name}
                   </ContextMenuItem>

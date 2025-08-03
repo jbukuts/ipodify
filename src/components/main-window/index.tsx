@@ -25,7 +25,7 @@ export default function Main() {
     <>
       <AlbumArt />
       <NoDeviceButton />
-      <main className='custom-scroll relative flex h-[18.75rem] w-[25rem] flex-col border-[0.125rem] border-fg bg-bg p-3'>
+      <main className='custom-scroll relative flex h-[18.75rem] w-[25rem] flex-col border-2 border-fg bg-bg p-3'>
         <Head />
         <div
           className={cn('flex w-full grow overflow-hidden')}

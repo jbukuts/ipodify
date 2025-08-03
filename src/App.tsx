@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { sdk } from './lib/sdk';
 import Main from './components/main-window';
 import { Toaster as Sonner } from 'sonner';
-import useAppSettings from './hooks/use-app-settings';
 import { useShallow } from 'zustand/react/shallow';
 import { useGlobalPlaybackState } from './lib/playback-state-context/hooks';
 import Blobs from './components/blobs';
+import useTheme from './hooks/use-theme';
 
 function App() {
   const [authed, setAuthed] = useState(false);
-  const [{ theme }] = useAppSettings();
+  const theme = useTheme();
   const htmlElementRef = useRef(document.body.parentElement);
   const title = useGlobalPlaybackState(
     useShallow((s) => {

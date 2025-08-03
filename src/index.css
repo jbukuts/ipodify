@@ -13,7 +13,20 @@
 @theme {
   --color-fg: black;
   --color-bg: white;
+
+  --base-border-width: 0.0625rem;
 }
+
+@utility border-1 {
+  border-style: var(--tw-border-style);
+  border-width: var(--base-border-width) !important;
+}
+
+@utility border-2 {
+  border-style: var(--tw-border-style);
+  border-width: calc(var(--base-border-width) * 2) !important;
+}
+
 
 @layer base {
   :root {

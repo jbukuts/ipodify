@@ -10,6 +10,7 @@ const SCREEN_MAP = {
   MainMenu: MainMenu,
   NowPlaying: lazy(() => import('./now-playing')),
   Playlist: lazy(() => import('./playlist')),
+  Profile: lazy(() => import('./user-info')),
   Queue: lazy(() => import('./queue')),
   Recents: lazy(() => import('./recently-played')),
   Settings: lazy(() => import('./settings')),
