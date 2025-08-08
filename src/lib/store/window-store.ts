@@ -4,10 +4,21 @@ import type { MenuType } from '#/components/windows';
 import type { ComponentProps } from 'react';
 import type SCREEN_MAP from '#/components/windows';
 
+type OptionalIfUndefined<T> =
+  CoalesceUndefined<T> extends undefined
+    ? [props?: CoalesceUndefined<T>]
+    : [props: CoalesceUndefined<T>];
+
+type CoalesceUndefined<T> = T extends unknown
+  ? unknown extends T
+    ? undefined
+    : T
+  : T;
+
 type WindowItem = [MenuType, ComponentProps<any>, string];
 
-type WindowCompProps<T extends MenuType> = ComponentProps<
-  (typeof SCREEN_MAP)[T]
+type WindowCompProps<T extends MenuType> = CoalesceUndefined<
+  ComponentProps<(typeof SCREEN_MAP)[T]>
 >;
 
 interface WindowStore {
@@ -16,7 +27,7 @@ interface WindowStore {
   addWindow: <T extends MenuType>(
     title: string,
     comp: T,
-    props?: WindowCompProps<T>
+    ...props: OptionalIfUndefined<WindowCompProps<T>>
   ) => void;
   removeWindow: (n?: number) => void;
 }
@@ -24,7 +35,7 @@ interface WindowStore {
 const useWindowStore = create<WindowStore>((set, get) => ({
   windows: [['MainMenu', {}, crypto.randomUUID()]],
   windowTitles: ['Your iPod'],
-  addWindow: (title, comp, props) => {
+  addWindow: (title, comp, ...[props]) => {
     const w: WindowItem = [comp, props, crypto.randomUUID()];
 
     set((s) => ({

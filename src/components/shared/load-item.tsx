@@ -1,19 +1,19 @@
-import { forwardRef, type ComponentProps } from 'react';
+import { type ComponentProps } from 'react';
 import MenuItem from './menu-item';
 
-const LoadItem = forwardRef<HTMLButtonElement, ComponentProps<typeof MenuItem>>(
-  (props: ComponentProps<typeof MenuItem>, ref) => {
-    return (
-      <MenuItem
-        ref={ref}
-        {...props}
-        className='pointer-events-none animate-pulse justify-center'
-        icon={false}
-        text={undefined}>
-        ...
-      </MenuItem>
-    );
-  }
-);
+type LoadItemProps = ComponentProps<typeof MenuItem>;
 
-export default LoadItem;
+export default function LoadItem(props: LoadItemProps) {
+  const { ref, ...rest } = props;
+
+  return (
+    <MenuItem
+      ref={ref}
+      {...rest}
+      className='pointer-events-none animate-pulse justify-center'
+      icon={false}
+      text={undefined}>
+      ...
+    </MenuItem>
+  );
+}

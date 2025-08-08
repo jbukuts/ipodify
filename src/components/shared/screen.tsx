@@ -1,6 +1,5 @@
 import { cn } from '#/lib/utils';
 import { Loader } from 'lucide-react';
-import { forwardRef } from 'react';
 import { Slot } from '@radix-ui/react-slot';
 
 interface ScreenProps extends React.ComponentProps<'div'> {
@@ -8,8 +7,8 @@ interface ScreenProps extends React.ComponentProps<'div'> {
   asChild?: boolean;
 }
 
-const Screen = forwardRef<HTMLDivElement, ScreenProps>((props, ref) => {
-  const { children, className, loading = false, asChild, ...rest } = props;
+export default function Screen(props: ScreenProps) {
+  const { children, className, loading = false, asChild, ref, ...rest } = props;
   const Comp = asChild ? Slot : 'div';
 
   return (
@@ -26,5 +25,4 @@ const Screen = forwardRef<HTMLDivElement, ScreenProps>((props, ref) => {
       )}
     </Comp>
   );
-});
-export default Screen;
+}

@@ -1,6 +1,6 @@
 import { cn } from '#/lib/utils';
 import { ChevronRight, type LucideIcon } from 'lucide-react';
-import { forwardRef, type ComponentProps } from 'react';
+import { type ComponentProps } from 'react';
 
 type MenuItemProps = ComponentProps<'button'> &
   (
@@ -11,12 +11,13 @@ type MenuItemProps = ComponentProps<'button'> &
     | { icon?: never; text?: string }
   );
 
-const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>((props, ref) => {
+function MenuItem(props: MenuItemProps) {
   const {
     children,
     className,
     icon: Icon = ChevronRight,
     text,
+    ref,
     ...rest
   } = props;
 
@@ -40,6 +41,6 @@ const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>((props, ref) => {
       <p className={cn('flex', text && 'pr-1 uppercase')}>{icons ?? text}</p>
     </button>
   );
-});
+}
 
 export default MenuItem;

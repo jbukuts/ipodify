@@ -1,5 +1,4 @@
 import {
-  forwardRef,
   memo,
   useCallback,
   useMemo,
@@ -24,27 +23,25 @@ interface BetterVirtualScreenProps {
   children: (po: { index: number; style: CSSProperties }) => ReactNode;
 }
 
-const InnerElement = forwardRef<HTMLDivElement, ComponentProps<'div'>>(
-  ({ style, ...rest }, ref) => {
-    const fontSize = useMemo(
-      () => parseFloat(getComputedStyle(document.documentElement).fontSize),
-      []
-    );
+function InnerElement({ style, ref, ...rest }: ComponentProps<'div'>) {
+  const fontSize = useMemo(
+    () => parseFloat(getComputedStyle(document.documentElement).fontSize),
+    []
+  );
 
-    return (
-      <div
-        className='relative'
-        ref={ref}
-        style={{
-          ...style,
-          pointerEvents: 'auto',
-          height: `${(typeof style!.height === 'string' ? parseFloat(style!.height!) : style!.height!) + PADDING * fontSize}px`
-        }}
-        {...rest}
-      />
-    );
-  }
-);
+  return (
+    <div
+      className='relative'
+      ref={ref}
+      style={{
+        ...style,
+        pointerEvents: 'auto',
+        height: `${(typeof style!.height === 'string' ? parseFloat(style!.height!) : style!.height!) + PADDING * fontSize}px`
+      }}
+      {...rest}
+    />
+  );
+}
 
 export default memo(function BetterVirtualScreen(
   props: BetterVirtualScreenProps
